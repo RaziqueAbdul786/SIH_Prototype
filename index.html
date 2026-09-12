@@ -1,0 +1,2675 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      CertiMind AI | National Intelligent Gateway for Indian Standards & BIS
+      Services
+    </title>
+
+    <!-- Tailwind CSS & FontAwesome -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700&family=Cinzel:wght@600;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- html2pdf.js for Direct 1-Click PDF Downloads -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              bis: {
+                navy: "#0b2545",
+                dark: "#134074",
+                blue: "#1d4ed8",
+                saffron: "#f97316",
+                green: "#15803d",
+                gold: "#ca8a04",
+                light: "#f8fafc",
+                border: "#e2e8f0",
+              },
+            },
+            fontFamily: {
+              sans: ["Inter", "Noto Sans Devanagari", "sans-serif"],
+              cinzel: ["Cinzel", "serif"],
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      .scanner-laser {
+        animation: scan 2s infinite ease-in-out;
+      }
+
+      @keyframes scan {
+        0% {
+          top: 5%;
+        }
+
+        50% {
+          top: 90%;
+        }
+
+        100% {
+          top: 5%;
+        }
+      }
+
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background-color: #cbd5e1;
+        border-radius: 9999px;
+      }
+
+      @media print {
+        body * {
+          visibility: hidden;
+        }
+
+        #pdfDocumentArea,
+        #pdfDocumentArea * {
+          visibility: visible;
+        }
+
+        #pdfDocumentArea {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+          margin: 0;
+          padding: 20px;
+          box-shadow: none !important;
+          border: none !important;
+        }
+
+        .no-print {
+          display: none !important;
+        }
+      }
+    </style>
+  </head>
+
+  <body
+    class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col antialiased"
+  >
+    <!-- Tricolor Bar -->
+    <div class="h-1.5 w-full flex no-print">
+      <div class="h-full w-1/3 bg-orange-500"></div>
+      <div class="h-full w-1/3 bg-white"></div>
+      <div class="h-full w-1/3 bg-emerald-600"></div>
+    </div>
+
+    <!-- Gov Portal Top Ribbon -->
+    <div
+      class="bg-bis-navy text-slate-200 text-xs py-1.5 px-4 sm:px-8 flex justify-between items-center border-b border-slate-700 no-print"
+    >
+      <div class="flex items-center space-x-3">
+        <span
+          class="bg-amber-500/20 text-amber-300 font-semibold px-2 py-0.5 rounded border border-amber-500/40 flex items-center"
+        >
+          <i class="fa-solid fa-trophy mr-1 text-[10px]"></i> Smart India
+          Hackathon Demo
+        </span>
+        <span class="hidden md:inline text-slate-300 font-medium"
+          >भारतीय मानक ब्यूरो • Bureau of Indian Standards | Government of
+          India</span
+        >
+      </div>
+      <div class="flex items-center space-x-4">
+        <div
+          class="flex items-center space-x-1.5 bg-slate-800 px-2.5 py-1 rounded border border-slate-700"
+        >
+          <i class="fa-solid fa-language text-amber-400"></i>
+          <select
+            id="langSelect"
+            onchange="changeLanguage(this.value)"
+            class="bg-transparent text-xs text-white outline-none cursor-pointer"
+          >
+            <option value="en" class="bg-slate-800 text-white">English</option>
+            <option value="hi" class="bg-slate-800 text-white">
+              हिन्दी (Hindi)
+            </option>
+            <option value="bn" class="bg-slate-800 text-white">
+              বাংলা (Bengali)
+            </option>
+            <option value="ta" class="bg-slate-800 text-white">
+              தமிழ் (Tamil)
+            </option>
+            <option value="te" class="bg-slate-800 text-white">
+              తెలుగు (Telugu)
+            </option>
+            <option value="mr" class="bg-slate-800 text-white">
+              मराठी (Marathi)
+            </option>
+          </select>
+        </div>
+        <button
+          onclick="openPitchModal()"
+          class="text-xs bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded font-bold transition flex items-center shadow"
+        >
+          <i class="fa-solid fa-chalkboard-user mr-1.5"></i> Hackathon Pitch
+          Deck
+        </button>
+      </div>
+    </div>
+
+    <!-- Official Live Gazette Ticker -->
+    <!-- <div
+      class="bg-amber-50 border-b border-amber-200 py-1 px-4 text-xs flex items-center justify-between no-print overflow-hidden"
+    >
+      <div class="flex items-center space-x-2 w-full">
+        <span
+          class="bg-amber-600 text-white text-[10px] uppercase font-extrabold px-1.5 py-0.5 rounded flex-shrink-0 animate-pulse"
+        >
+          Gazette Alert
+        </span>
+        <div class="truncate text-slate-700 text-[11px] font-medium">
+          <span
+            >🔴 Quality Control Orders (QCO) updated for 20+ core manufacturing
+            sectors: EV Batteries, Steel, Footwear, Solar PV, Helmets & Toys •
+            50% Concession active for Micro Enterprises under Udyam</span
+          >
+        </div>
+      </div>
+      <span
+        class="text-[10px] text-slate-400 font-mono hidden sm:inline flex-shrink-0 ml-2"
+        >Live Sync: BIS Care v4.2</span
+      >
+    </div> -->
+
+    <!-- Main Portal Header & Navigation -->
+    <header
+      class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm no-print"
+    >
+      <div
+        class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap justify-between items-center gap-3"
+      >
+        <div
+          class="flex items-center space-x-3 cursor-pointer"
+          onclick="switchSection('home')"
+        >
+          <div
+            class="h-11 w-11 rounded-xl bg-gradient-to-tr from-bis-navy to-blue-700 flex items-center justify-center text-white shadow-md text-xl font-bold"
+          >
+            <i class="fa-solid fa-certificate text-amber-400"></i>
+          </div>
+          <div>
+            <div class="flex items-center space-x-2">
+              <h1 class="text-xl font-extrabold text-bis-navy tracking-tight">
+                CertiMind AI
+              </h1>
+              <span
+                class="text-[10px] uppercase font-bold tracking-wider bg-blue-100 text-blue-800 px-1.5 py-0.5 rounded"
+                >Gov-Tech AI</span
+              >
+            </div>
+            <p class="text-xs text-slate-500 font-medium">
+              National Intelligent Assistant for 20+ Major Indian
+              Industries
+            </p>
+          </div>
+        </div>
+
+        <nav
+          class="flex flex-wrap items-center bg-slate-100 p-1 rounded-xl border border-slate-200 gap-1 text-xs font-semibold"
+        >
+          <button
+            onclick="switchSection('home')"
+            id="nav-home"
+            class="nav-btn px-3 py-1.5 rounded-lg bg-white text-bis-navy shadow-sm transition"
+          >
+            <i class="fa-solid fa-house mr-1 text-blue-600"></i> Home
+          </button>
+          <button
+            onclick="switchSection('assistant')"
+            id="nav-assistant"
+            class="nav-btn px-3 py-1.5 rounded-lg text-slate-600 hover:text-bis-navy transition"
+          >
+            <i class="fa-solid fa-robot mr-1 text-purple-600"></i> AI Copilot
+          </button>
+          <button
+            onclick="switchSection('scanner')"
+            id="nav-scanner"
+            class="nav-btn px-3 py-1.5 rounded-lg text-slate-600 hover:text-bis-navy transition"
+          >
+            <i class="fa-solid fa-camera-viewfinder mr-1 text-amber-600"></i>
+            Scan ISI / HUID
+          </button>
+          <button
+            onclick="switchSection('msme')"
+            id="nav-msme"
+            class="nav-btn px-3 py-1.5 rounded-lg text-slate-600 hover:text-bis-navy transition"
+          >
+            <i class="fa-solid fa-industry mr-1 text-emerald-600"></i> 20 MSME
+            Roadmaps
+          </button>
+          <button
+            onclick="switchSection('standards')"
+            id="nav-standards"
+            class="nav-btn px-3 py-1.5 rounded-lg text-slate-600 hover:text-bis-navy transition"
+          >
+            <i class="fa-solid fa-book-bookmark mr-1 text-blue-500"></i> 20 IS
+            Standards Catalog
+          </button>
+          <button
+            onclick="switchSection('grievance')"
+            id="nav-grievance"
+            class="nav-btn px-3 py-1.5 rounded-lg text-slate-600 hover:text-bis-navy transition"
+          >
+            <i class="fa-solid fa-shield-halved mr-1 text-rose-600"></i> Report
+            Fraud
+          </button>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Main Body Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-8 no-print">
+      <!-- ================= SECTION 0: HOME / HERO OVERVIEW ================= -->
+      <section id="sec-home" class="space-y-8">
+        <div
+          class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-bis-navy via-slate-900 to-blue-900 text-white p-6 sm:p-12 shadow-xl"
+        >
+          <div class="relative z-10 max-w-3xl space-y-4">
+            <span
+              class="inline-flex items-center space-x-2 bg-amber-500/20 text-amber-300 border border-amber-500/30 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider"
+            >
+              <i class="fa-solid fa-sparkles text-amber-400"></i>
+              <span
+                >Powering 20 Key Indian Industrial Sectors with Generative
+                AI</span
+              >
+            </span>
+            <h2
+              class="text-2xl sm:text-4xl font-extrabold tracking-tight leading-tight"
+            >
+              Democratizing Quality Standards for
+              <span class="text-amber-400">1.4 Billion Citizens</span> &
+              Accelerating <span class="text-emerald-400">63M MSMEs</span>.
+            </h2>
+            <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+              From Electric Vehicles and Helmets to Solar Panels, Cement, Steel,
+              and Packaged Drinking Water — navigate 20+ core Indian standard
+              ecosystems, verify authentic marks via computer vision, and
+              download official Form-V licence PDFs.
+            </p>
+
+            <div class="pt-4 flex flex-wrap gap-3">
+              <button
+                onclick="switchSection('msme')"
+                class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm shadow-lg transition flex items-center space-x-2"
+              >
+                <i class="fa-solid fa-industry"></i>
+                <span>Explore 20 Industry Roadmaps</span>
+              </button>
+              <button
+                onclick="switchSection('assistant')"
+                class="px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs sm:text-sm shadow-lg transition flex items-center space-x-2"
+              >
+                <i class="fa-solid fa-comments"></i>
+                <span>Ask AI Standards Copilot</span>
+              </button>
+              <button
+                onclick="switchSection('scanner')"
+                class="px-5 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-900 font-extrabold text-xs sm:text-sm shadow-lg transition flex items-center space-x-2"
+              >
+                <i class="fa-solid fa-camera"></i>
+                <span>Verify ISI / Hallmark Scan</span>
+              </button>
+            </div>
+          </div>
+
+          <div
+            class="absolute -right-16 -bottom-16 opacity-10 text-white text-[280px] pointer-events-none"
+          >
+            <i class="fa-solid fa-certificate"></i>
+          </div>
+        </div>
+
+        <!-- 20 Sectors Quick Pill Bar -->
+        <div
+          class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-3"
+        >
+          <div class="flex justify-between items-center">
+            <h3
+              class="text-xs font-extrabold text-slate-700 uppercase tracking-wider flex items-center"
+            >
+              <i class="fa-solid fa-layer-group text-blue-600 mr-2"></i> 20
+              Notified Industry Sectors (Click to Load Roadmap & PDF)
+            </h3>
+            <span
+              class="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded"
+              >100% QCO Compliant</span
+            >
+          </div>
+          <div class="flex flex-wrap gap-2" id="homePillsContainer">
+            <!-- Injected via JS -->
+          </div>
+        </div>
+
+        <!-- Live Portal Statistics -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div
+            class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-1"
+          >
+            <span
+              class="text-[11px] font-bold text-slate-400 uppercase tracking-wider"
+              >Mandatory Sectors Covered</span
+            >
+            <div class="text-2xl font-black text-bis-navy">
+              20 Major Sectors
+            </div>
+            <p
+              class="text-[11px] text-emerald-600 font-semibold flex items-center"
+            >
+              <i class="fa-solid fa-check-double mr-1"></i> Full Lab Checklists
+              & Fee Slabs
+            </p>
+          </div>
+          <div
+            class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-1"
+          >
+            <span
+              class="text-[11px] font-bold text-slate-400 uppercase tracking-wider"
+              >Indexed Indian Standards</span
+            >
+            <div class="text-2xl font-black text-blue-700">
+              21,420+ Standards
+            </div>
+            <p class="text-[11px] text-slate-500 font-medium">
+              Scheme I (ISI) & Scheme II (CRS)
+            </p>
+          </div>
+          <div
+            class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-1"
+          >
+            <span
+              class="text-[11px] font-bold text-slate-400 uppercase tracking-wider"
+              >MSME Fee Concession</span
+            >
+            <div class="text-2xl font-black text-emerald-700">50% Rebate</div>
+            <p class="text-[11px] text-emerald-700 font-medium">
+              Udyam Registration Integration
+            </p>
+          </div>
+          <div
+            class="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-1"
+          >
+            <span
+              class="text-[11px] font-bold text-slate-400 uppercase tracking-wider"
+              >Supported Indic Languages</span
+            >
+            <div class="text-2xl font-black text-amber-600">12+ Languages</div>
+            <p class="text-[11px] text-slate-500 font-medium">
+              Bhashini Speech & Translation
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= SECTION 1: AI STANDARDS ASSISTANT ================= -->
+      <section
+        id="sec-assistant"
+        class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6"
+      >
+        <div class="lg:col-span-4 space-y-4">
+          <div
+            class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-3"
+          >
+            <div class="flex items-center justify-between">
+              <span
+                class="text-xs font-bold uppercase tracking-wider text-slate-400"
+                >Current Role</span
+              >
+              <span
+                id="roleBadge"
+                class="text-xs px-2.5 py-0.5 rounded-full font-semibold bg-blue-100 text-blue-800"
+              >
+                <i class="fa-solid fa-user-check mr-1"></i> Consumer Mode
+              </span>
+            </div>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <button
+                onclick="setRole('consumer')"
+                id="roleBtn-consumer"
+                class="p-2 rounded-lg border-2 border-blue-500 bg-blue-50 text-blue-800 font-medium text-left transition flex items-center space-x-2"
+              >
+                <i class="fa-solid fa-user text-blue-600"></i>
+                <span>Consumer Mode</span>
+              </button>
+              <button
+                onclick="setRole('industry')"
+                id="roleBtn-industry"
+                class="p-2 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-700 font-medium text-left transition flex items-center space-x-2"
+              >
+                <i class="fa-solid fa-industry text-slate-600"></i>
+                <span>Industry / MSME</span>
+              </button>
+            </div>
+          </div>
+
+          <div
+            class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-2"
+          >
+            <h3
+              class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2 flex items-center"
+            >
+              <i class="fa-solid fa-bolt text-amber-500 mr-1.5"></i> Featured
+              Inquiry Presets
+            </h3>
+            <div class="space-y-1.5" id="chatPresetsList">
+              <!-- Populated via JS -->
+            </div>
+          </div>
+
+          <div
+            class="bg-gradient-to-r from-blue-700 to-bis-navy text-white p-4 rounded-xl shadow-sm space-y-2.5"
+          >
+            <div
+              class="flex items-center space-x-2 text-amber-300 font-bold text-xs"
+            >
+              <i class="fa-solid fa-file-pdf text-rose-400"></i>
+              <span>Instant PDF Exporter</span>
+            </div>
+            <p class="text-slate-200 text-[11px] leading-relaxed">
+              Click to view and download official BIS Form-V application and
+              Indian standard specifications in PDF format:
+            </p>
+            <div class="grid grid-cols-2 gap-2 pt-1">
+              <button
+                onclick="openPdfViewer('formV')"
+                class="bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold py-2 px-2 rounded-lg text-[11px] transition text-center flex items-center justify-center space-x-1 shadow"
+              >
+                <i class="fa-solid fa-file-arrow-down"></i>
+                <span>Download Form-V</span>
+              </button>
+              <button
+                onclick="openPdfViewer('spec')"
+                class="bg-white/20 hover:bg-white/30 text-white font-semibold py-2 px-2 rounded-lg text-[11px] transition text-center flex items-center justify-center space-x-1"
+              >
+                <i class="fa-solid fa-book-open"></i>
+                <span>Download IS Spec</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="lg:col-span-8 flex flex-col bg-white rounded-xl border border-slate-200 shadow-sm h-[620px] overflow-hidden"
+        >
+          <div
+            class="p-3.5 bg-slate-50 border-b border-slate-200 flex justify-between items-center"
+          >
+            <div class="flex items-center space-x-2.5">
+              <div class="relative">
+                <div
+                  class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold"
+                >
+                  <i class="fa-solid fa-sparkles"></i>
+                </div>
+                <span
+                  class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-white rounded-full"
+                ></span>
+              </div>
+              <div>
+                <h2 class="text-sm font-bold text-slate-800">
+                  CertiMind Copilot
+                </h2>
+                <p class="text-[11px] text-slate-500">
+                  Live Indian Standards RAG Model • 20 Core Industries Grounded
+                </p>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2 text-xs">
+              <button
+                onclick="clearChat()"
+                title="Reset Conversation"
+                class="p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-200 rounded transition"
+              >
+                <i class="fa-solid fa-rotate-left"></i>
+              </button>
+              <span
+                class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[11px] font-semibold flex items-center"
+              >
+                <span
+                  class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5 animate-ping"
+                ></span>
+                Live Grounding
+              </span>
+            </div>
+          </div>
+
+          <div
+            id="chatMessages"
+            class="flex-1 p-4 overflow-y-auto space-y-4 custom-scrollbar text-sm bg-slate-50/50"
+          >
+            <div class="flex items-start space-x-3">
+              <div
+                class="w-7 h-7 rounded-full bg-bis-navy flex-shrink-0 flex items-center justify-center text-amber-400 text-xs"
+              >
+                <i class="fa-solid fa-shield"></i>
+              </div>
+              <div class="space-y-1 max-w-[85%]">
+                <div
+                  class="bg-white p-3.5 rounded-2xl rounded-tl-none border border-slate-200 shadow-sm text-slate-700 leading-relaxed text-xs sm:text-sm"
+                >
+                  <p class="font-semibold text-bis-navy mb-1">
+                    Namaste! Welcome to CertiMind AI 🙏
+                  </p>
+                  <p>
+                    I am trained on 20+ key Indian industrial standards
+                    including EV Batteries, Steel, Helmets, Fire Extinguishers,
+                    Cement, Footwear, Solar PV, and Toys. Ask anything or click
+                    a preset to see clause-grounded guidance!
+                  </p>
+                </div>
+                <span class="text-[10px] text-slate-400 pl-1"
+                  >BIS Knowledge Agent • Just now</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <div class="p-3 bg-white border-t border-slate-200 space-y-2">
+            <form
+              onsubmit="handleUserSubmit(event)"
+              class="flex items-center space-x-2"
+            >
+              <button
+                type="button"
+                onclick="triggerVoiceInput()"
+                id="micBtn"
+                title="Voice Input"
+                class="w-10 h-10 rounded-xl border border-slate-200 hover:border-amber-400 hover:bg-amber-50 text-slate-600 hover:text-amber-600 flex items-center justify-center transition"
+              >
+                <i class="fa-solid fa-microphone text-sm" id="micIcon"></i>
+              </button>
+              <input
+                type="text"
+                id="userInput"
+                placeholder="Ask about cement, solar panels, fire extinguishers, helmets, water..."
+                class="flex-1 px-4 py-2.5 text-sm bg-slate-50 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition"
+              />
+              <button
+                type="submit"
+                class="w-10 h-10 rounded-xl bg-blue-600 hover:bg-blue-700 text-white flex items-center justify-center transition shadow-sm font-semibold"
+              >
+                <i class="fa-solid fa-paper-plane text-sm"></i>
+              </button>
+            </form>
+            <div
+              class="flex items-center justify-between text-[11px] text-slate-400 px-1"
+            >
+              <span class="flex items-center space-x-1">
+                <i class="fa-solid fa-shield-halved text-blue-500"></i>
+                <span
+                  >Grounding: 20 Notified QCO Gazettes • Form-V Generator</span
+                >
+              </span>
+              <span id="voiceStatus" class="text-amber-600 font-medium hidden">
+                <i class="fa-solid fa-waveform-lines animate-pulse mr-1"></i>
+                Listening via Bhashini Speech Engine...
+              </span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= SECTION 2: VISION SCANNER ================= -->
+      <section id="sec-scanner" class="hidden space-y-6">
+        <div
+          class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4"
+        >
+          <div>
+            <h2 class="text-lg font-bold text-bis-navy flex items-center">
+              <i class="fa-solid fa-camera text-amber-500 mr-2"></i> Computer
+              Vision Authenticity Scanner
+            </h2>
+            <p class="text-xs text-slate-500">
+              Scan product packaging or gold jewellery to detect fake ISI marks
+              and invalid 6-digit HUID codes.
+            </p>
+          </div>
+
+          <div class="flex flex-wrap gap-2 pt-2">
+            <button
+              onclick="loadScanSample('valid_isi')"
+              id="btn-sample-1"
+              class="sample-btn px-3 py-1.5 rounded-lg text-xs font-semibold border-2 border-emerald-500 bg-emerald-50 text-emerald-800 transition"
+            >
+              <i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i>
+              Sample 1: Authentic ISI Mark (IS 14543)
+            </button>
+            <button
+              onclick="loadScanSample('fake_isi')"
+              id="btn-sample-2"
+              class="sample-btn px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 text-slate-600 hover:bg-slate-50 transition"
+            >
+              <i
+                class="fa-solid fa-triangle-exclamation text-rose-500 mr-1"
+              ></i>
+              Sample 2: Counterfeit / Forged CML
+            </button>
+            <button
+              onclick="loadScanSample('valid_huid')"
+              id="btn-sample-3"
+              class="sample-btn px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 text-slate-600 hover:bg-slate-50 transition"
+            >
+              <i class="fa-solid fa-gem text-amber-500 mr-1"></i> Sample 3: Gold
+              Jewellery HUID (6-Digit)
+            </button>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-2">
+            <div
+              class="lg:col-span-6 bg-slate-900 rounded-2xl p-4 flex flex-col items-center justify-center relative overflow-hidden min-h-[340px] text-white"
+            >
+              <div
+                id="scanOverlay"
+                class="absolute inset-x-6 top-8 bottom-8 border-2 border-dashed border-amber-400/80 rounded-xl pointer-events-none flex items-center justify-center"
+              >
+                <div
+                  class="scanner-laser absolute inset-x-2 h-0.5 bg-gradient-to-r from-transparent via-amber-400 to-transparent shadow-[0_0_12px_#f59e0b]"
+                ></div>
+              </div>
+              <div
+                id="samplePreview"
+                class="w-full max-w-sm h-64 bg-slate-800 rounded-xl flex flex-col items-center justify-center border border-slate-700 p-4 text-center"
+              ></div>
+              <div class="mt-3 flex items-center space-x-3 text-xs z-10">
+                <span
+                  class="bg-slate-800/80 px-2.5 py-1 rounded text-slate-300 border border-slate-700"
+                >
+                  <i class="fa-solid fa-expand mr-1 text-amber-400"></i> OCR
+                  Model: PaddleOCR-v4
+                </span>
+                <button
+                  onclick="reScan()"
+                  class="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1 rounded font-medium transition shadow"
+                >
+                  <i class="fa-solid fa-arrows-rotate mr-1"></i> Re-Scan Image
+                </button>
+              </div>
+            </div>
+
+            <div class="lg:col-span-6 space-y-4">
+              <div
+                id="scanResultCard"
+                class="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= SECTION 3: 20 MSME CONFORMITY ROADMAPS ================= -->
+      <section id="sec-msme" class="hidden space-y-6">
+        <div
+          class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6"
+        >
+          <div
+            class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3"
+          >
+            <div>
+              <span
+                class="text-xs font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded"
+                >20 Core Industries Available</span
+              >
+              <h2 class="text-xl font-bold text-bis-navy mt-1">
+                Automated MSME Conformity Assessment Navigator
+              </h2>
+              <p class="text-xs text-slate-500">
+                Select any of the 20 official businesses below. The system
+                automatically computes turnaround times, testing lab equipment,
+                50% Udyam fee rebates, and generates pre-filled Form-V PDFs.
+              </p>
+            </div>
+            <button
+              onclick="openPdfViewer('formV')"
+              class="bg-rose-600 hover:bg-rose-700 text-white px-4 py-2.5 rounded-xl text-xs font-bold shadow-md transition flex items-center space-x-2"
+            >
+              <i class="fa-solid fa-file-arrow-down text-white"></i>
+              <span>Generate & Download Form-V (.pdf)</span>
+            </button>
+          </div>
+
+          <!-- 3-Input Wizard -->
+          <div
+            class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-slate-50 p-4 rounded-xl border border-slate-200"
+          >
+            <div>
+              <label class="text-xs font-bold text-slate-700 uppercase"
+                >Select Industry / Business (20 Covered)</label
+              >
+              <select
+                id="roadmapSector"
+                onchange="generateRoadmap()"
+                class="mt-1 w-full p-2.5 text-xs bg-white rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none font-semibold"
+              >
+                <!-- Dynamically populated 20 businesses -->
+              </select>
+            </div>
+            <div>
+              <label class="text-xs font-bold text-slate-700 uppercase"
+                >Enterprise Scale</label
+              >
+              <select
+                id="roadmapScale"
+                onchange="generateRoadmap()"
+                class="mt-1 w-full p-2.5 text-xs bg-white rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+              >
+                <option value="micro">
+                  Micro Enterprise (Udyam Certified - 50% Concession)
+                </option>
+                <option value="small">
+                  Small Enterprise (Udyam Certified - 20% Concession)
+                </option>
+                <option value="medium">
+                  Medium / Large Industry (Standard Fees)
+                </option>
+              </select>
+            </div>
+            <div>
+              <label class="text-xs font-bold text-slate-700 uppercase"
+                >Testing Capability</label
+              >
+              <select
+                id="roadmapLab"
+                onchange="generateRoadmap()"
+                class="mt-1 w-full p-2.5 text-xs bg-white rounded-lg border border-slate-300 focus:ring-2 focus:ring-blue-500 outline-none"
+              >
+                <option value="inhouse">
+                  In-house Quality Control Lab Available
+                </option>
+                <option value="thirdparty">
+                  Need BIS Recognized Third-Party Lab
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div id="roadmapOutput" class="space-y-6"></div>
+        </div>
+      </section>
+
+      <!-- ================= SECTION 4: 20 STANDARDS CATALOG ================= -->
+      <section id="sec-standards" class="hidden space-y-6">
+        <div
+          class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4"
+        >
+          <div
+            class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3"
+          >
+            <div>
+              <div class="flex items-center space-x-2">
+                <h2 class="text-xl font-bold text-bis-navy">
+                  Indian Standards (IS Codes) Catalog
+                </h2>
+                <span
+                  class="text-xs bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded"
+                  >20 Core Industries</span
+                >
+              </div>
+              <p class="text-xs text-slate-500">
+                Searchable repository of mandatory Quality Control Orders (QCO)
+                and specifications.
+              </p>
+            </div>
+            <div class="w-full sm:w-72">
+              <input
+                type="text"
+                id="standardSearchInput"
+                onkeyup="filterStandards()"
+                placeholder="Search any standard (e.g. Helmet, Cement, 17855, Toys)..."
+                class="w-full px-3.5 py-2 bg-slate-50 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-blue-500 outline-none"
+              />
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table
+              class="w-full text-xs text-left border-collapse"
+              id="standardsTable"
+            >
+              <thead
+                class="bg-slate-100 font-bold border-b border-slate-200 text-slate-700"
+              >
+                <tr>
+                  <th class="p-3">#</th>
+                  <th class="p-3">IS Code</th>
+                  <th class="p-3">Standard Title</th>
+                  <th class="p-3">Industry Sector</th>
+                  <th class="p-3">Certification Scheme</th>
+                  <th class="p-3">QCO Status</th>
+                  <th class="p-3 text-center">Action</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-200" id="standardsTableBody">
+                <!-- Dynamically populated 20 standards via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= SECTION 5: GRIEVANCE REDRESSAL ================= -->
+      <section id="sec-grievance" class="hidden space-y-6">
+        <div
+          class="max-w-3xl mx-auto bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-6"
+        >
+          <div class="text-center space-y-1.5">
+            <div
+              class="w-12 h-12 bg-rose-100 text-rose-600 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold"
+            >
+              <i class="fa-solid fa-shield-virus"></i>
+            </div>
+            <h2 class="text-xl font-bold text-bis-navy">
+              Report Substandard / Counterfeit Product
+            </h2>
+            <p class="text-xs text-slate-500">
+              File an official complaint under Section 29 of the BIS Act, 2016
+              for counterfeit ISI marks or fake Hallmarks.
+            </p>
+          </div>
+
+          <form onsubmit="submitGrievance(event)" class="space-y-4 text-xs">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="font-bold text-slate-700"
+                  >Violation Category</label
+                >
+                <select
+                  class="mt-1 w-full p-2.5 bg-slate-50 rounded-lg border border-slate-300 outline-none"
+                >
+                  <option>Misuse of ISI Mark without valid CML</option>
+                  <option>Fake 6-digit HUID Hallmark on Gold</option>
+                  <option>Sub-standard quality of ISI marked goods</option>
+                  <option>Unregistered Electronics under CRS Scheme</option>
+                </select>
+              </div>
+              <div>
+                <label class="font-bold text-slate-700"
+                  >Brand / Manufacturer Name</label
+                >
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Royal Aqua"
+                  class="mt-1 w-full p-2.5 bg-slate-50 rounded-lg border border-slate-300 outline-none"
+                />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="font-bold text-slate-700"
+                  >Retailer / Market Location</label
+                >
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Chandni Chowk Market, Delhi"
+                  class="mt-1 w-full p-2.5 bg-slate-50 rounded-lg border border-slate-300 outline-none"
+                />
+              </div>
+              <div>
+                <label class="font-bold text-slate-700"
+                  >Packaging Photo Proof</label
+                >
+                <input
+                  type="file"
+                  class="mt-1 w-full p-2 bg-slate-50 rounded-lg border border-slate-300 text-slate-500"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="font-bold text-slate-700">Incident Details</label>
+              <textarea
+                rows="3"
+                placeholder="Describe the violation, lack of batch number, or reason for suspecting counterfeit..."
+                class="mt-1 w-full p-2.5 bg-slate-50 rounded-lg border border-slate-300 outline-none"
+              ></textarea>
+            </div>
+
+            <button
+              type="submit"
+              class="w-full py-3 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-bold transition shadow-md flex items-center justify-center space-x-2"
+            >
+              <i class="fa-solid fa-paper-plane"></i>
+              <span>Submit Grievance to BIS Central Enforcement Cell</span>
+            </button>
+          </form>
+
+          <div
+            id="grievanceAlert"
+            class="hidden p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs space-y-1"
+          >
+            <div class="font-bold flex items-center">
+              <i class="fa-solid fa-circle-check mr-2"></i> Grievance Docket
+              #BIS-2026-88941 Registered!
+            </div>
+            <p>
+              Your complaint has been forwarded to the Enforcement Wing.
+              Tracking link sent via SMS.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ================= MODAL: OFFICIAL BIS PDF VIEWER & DOWNLOADER ================= -->
+    <div
+      id="pdfModal"
+      class="fixed inset-0 bg-black/75 backdrop-blur-md z-50 hidden flex flex-col items-center justify-center p-2 sm:p-4"
+    >
+      <div
+        class="max-w-4xl w-full bg-slate-900 text-white px-4 py-2.5 rounded-t-xl flex justify-between items-center text-xs shadow-lg border-b border-slate-700 no-print"
+      >
+        <div class="flex items-center space-x-3">
+          <div
+            class="w-7 h-7 bg-rose-600 rounded flex items-center justify-center font-bold"
+          >
+            <i class="fa-solid fa-file-pdf"></i>
+          </div>
+          <div>
+            <span id="pdfDocTitle" class="font-bold text-sm block"
+              >BIS Official Document</span
+            >
+            <span class="text-[10px] text-slate-400"
+              >Authentic Gazette Specification / Application Form</span
+            >
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-2">
+          <button
+            onclick="switchPdfView('formV')"
+            id="btnPdfTab-formV"
+            class="px-2.5 py-1 rounded bg-blue-600 text-white font-semibold text-xs transition"
+          >
+            Form-V
+          </button>
+          <button
+            onclick="switchPdfView('spec')"
+            id="btnPdfTab-spec"
+            class="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs transition"
+          >
+            IS Specification
+          </button>
+          <div class="h-4 w-px bg-slate-700 mx-1"></div>
+
+          <button
+            onclick="downloadAsPdfFile()"
+            id="pdfDownloadBtn"
+            title="Direct 1-Click Download PDF"
+            class="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-500 text-white rounded-lg font-extrabold transition flex items-center space-x-1.5 shadow-md"
+          >
+            <i class="fa-solid fa-download"></i>
+            <span>Download PDF (.pdf)</span>
+          </button>
+
+          <button
+            onclick="printDocument()"
+            title="Print via Browser"
+            class="px-2.5 py-1.5 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded font-semibold transition flex items-center space-x-1"
+          >
+            <i class="fa-solid fa-print"></i>
+            <span class="hidden sm:inline">Print</span>
+          </button>
+
+          <button
+            onclick="closePdfViewer()"
+            class="p-1.5 text-slate-400 hover:text-white text-base ml-1"
+          >
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+
+      <div
+        class="max-w-4xl w-full bg-slate-200 p-4 sm:p-8 overflow-y-auto max-h-[82vh] rounded-b-xl flex justify-center custom-scrollbar"
+      >
+        <div
+          id="pdfDocumentArea"
+          class="bg-white w-full max-w-3xl min-h-[1050px] p-8 sm:p-12 shadow-2xl border border-slate-300 relative text-slate-900 font-sans text-xs space-y-6"
+        >
+          <div
+            class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-5 rotate-[-35deg]"
+          >
+            <span
+              class="text-7xl font-extrabold font-cinzel text-slate-900 uppercase tracking-widest text-center"
+            >
+              BUREAU OF INDIAN STANDARDS<br />GOVT. OF INDIA
+            </span>
+          </div>
+          <div id="pdfDynamicContent" class="relative z-10 space-y-6"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================= MODAL: SIH HACKATHON PITCH DECK ================= -->
+    <div
+      id="pitchModal"
+      class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 no-print"
+    >
+      <div
+        class="bg-white max-w-4xl w-full rounded-2xl shadow-2xl border border-slate-200 max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in duration-200"
+      >
+        <div
+          class="p-4 bg-bis-navy text-white flex justify-between items-center"
+        >
+          <div class="flex items-center space-x-2">
+            <i class="fa-solid fa-award text-amber-400 text-lg"></i>
+            <div>
+              <h3 class="font-bold text-sm">
+                Smart India Hackathon Pitch & Technical Architecture
+              </h3>
+              <p class="text-[11px] text-slate-300">
+                Problem Statement: AI-powered Intelligent Assistant for Indian
+                Standards and BIS Services
+              </p>
+            </div>
+          </div>
+          <button
+            onclick="closePitchModal()"
+            class="text-slate-400 hover:text-white text-lg p-1"
+          >
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <div
+          id="pitchDeckContent"
+          class="p-6 overflow-y-auto space-y-6 text-xs text-slate-700 custom-scrollbar"
+        >
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div
+              class="p-4 rounded-xl bg-blue-50 border border-blue-200 space-y-1"
+            >
+              <span class="text-blue-600 font-bold uppercase text-[10px]"
+                >Pillar 1: Innovation</span
+              >
+              <h4 class="font-bold text-slate-800 text-sm">
+                Hybrid Clause-Level RAG
+              </h4>
+              <p class="text-slate-600">
+                Eliminates hallucinations by chunking standards strictly by IS
+                clause numbers with page-level citations across 20+ sectors.
+              </p>
+            </div>
+            <div
+              class="p-4 rounded-xl bg-amber-50 border border-amber-200 space-y-1"
+            >
+              <span class="text-amber-600 font-bold uppercase text-[10px]"
+                >Pillar 2: Inclusivity</span
+              >
+              <h4 class="font-bold text-slate-800 text-sm">
+                Bhashini Voice Engine
+              </h4>
+              <p class="text-slate-600">
+                Voice-in and Voice-out in 12+ official Indic languages for rural
+                consumers and non-English MSME artisans.
+              </p>
+            </div>
+            <div
+              class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 space-y-1"
+            >
+              <span class="text-emerald-600 font-bold uppercase text-[10px]"
+                >Pillar 3: Enforcement</span
+              >
+              <h4 class="font-bold text-slate-800 text-sm">
+                Real-time Vision OCR
+              </h4>
+              <p class="text-slate-600">
+                Instantly reads CML licenses and 6-digit HUID marks from camera
+                frames against live BIS registries.
+              </p>
+            </div>
+          </div>
+
+          <div
+            class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3"
+          >
+            <h4 class="font-bold text-bis-navy text-sm flex items-center">
+              <i class="fa-solid fa-diagram-project mr-2 text-blue-600"></i>
+              Technical Architecture Pipeline
+            </h4>
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-center">
+              <div
+                class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm"
+              >
+                <span class="font-bold text-blue-700 block"
+                  >1. User Gateway</span
+                >
+                <span class="text-[11px] text-slate-500"
+                  >React PWA / WhatsApp Bot / Voice Mic</span
+                >
+              </div>
+              <div
+                class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm"
+              >
+                <span class="font-bold text-purple-700 block"
+                  >2. Ingestion & NLP</span
+                >
+                <span class="text-[11px] text-slate-500"
+                  >Bhashini ASR + PaddleOCR Vision Engine</span
+                >
+              </div>
+              <div
+                class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm"
+              >
+                <span class="font-bold text-emerald-700 block"
+                  >3. Citational RAG</span
+                >
+                <span class="text-[11px] text-slate-500"
+                  >Qdrant Vector DB + Dense/BM25 Hybrid Retrieval</span
+                >
+              </div>
+              <div
+                class="bg-white p-3 rounded-lg border border-slate-200 shadow-sm"
+              >
+                <span class="font-bold text-amber-700 block"
+                  >4. Grounded Output</span
+                >
+                <span class="text-[11px] text-slate-500"
+                  >Exact IS Clause + Form-V PDF + Verification Card</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="p-4 bg-slate-100 border-t border-slate-200 flex justify-between items-center"
+        >
+          <button
+            onclick="downloadPitchReportPdf()"
+            class="px-3.5 py-2 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-xs font-bold transition flex items-center space-x-1.5 shadow"
+          >
+            <i class="fa-solid fa-file-arrow-down"></i>
+            <span>Download Pitch Report (.pdf)</span>
+          </button>
+          <button
+            onclick="closePitchModal()"
+            class="px-4 py-2 bg-bis-navy text-white rounded-lg text-xs font-semibold hover:bg-slate-800 transition"
+          >
+            Close Preview
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer
+      class="bg-white border-t border-slate-200 py-6 px-6 text-center text-xs text-slate-500 no-print space-y-2"
+    >
+      <div
+        class="flex justify-center flex-wrap gap-4 text-slate-600 font-medium"
+      >
+        <span
+          class="cursor-pointer hover:text-blue-600"
+          onclick="switchSection('home')"
+          >Home</span
+        >
+        <span
+          class="cursor-pointer hover:text-blue-600"
+          onclick="switchSection('assistant')"
+          >AI Copilot</span
+        >
+        <span
+          class="cursor-pointer hover:text-blue-600"
+          onclick="switchSection('scanner')"
+          >Scan ISI / HUID</span
+        >
+        <span
+          class="cursor-pointer hover:text-blue-600"
+          onclick="switchSection('msme')"
+          >20 Industry Roadmaps</span
+        >
+        <span
+          class="cursor-pointer hover:text-blue-600"
+          onclick="switchSection('standards')"
+          >20 Standards Catalog</span
+        >
+      </div>
+      <p>
+        © 2026 CertiMind AI • Developed for Smart India Hackathon (SIH) • In
+        alignment with Bureau of Indian Standards & Make in India Initiatives
+      </p>
+    </footer>
+
+    <!-- ================= SCRIPT LOGIC (20 BUSINESSES DATASET) ================= -->
+    <script>
+      let currentRole = "consumer";
+      let currentLanguage = "en";
+      let currentPdfDoc = "formV";
+      let selectedBusinessKey = "water";
+
+      // 20 COMPLETE BUSINESSES & INDIAN STANDARDS DATASET
+      const businesses = {
+        water: {
+          id: 1,
+          name: "Packaged Drinking Water & Natural Mineral Water",
+          sector: "Food & Beverages",
+          code: "IS 14543 : 2016",
+          scheme: "Scheme I (Mandatory ISI Mark)",
+          qco: "Mandatory QCO",
+          timeline: "25 - 35 Days",
+          baseFee: "₹1,000 Application + ₹1,60,000 Annual Marking Fee",
+          msmeConcession: "₹80,000 (50% Concession under Udyam Scheme)",
+          clause:
+            "Clause 5.2 (Microbiological Requirements) & Clause 6.1 (Container Packaging)",
+          labEquipment:
+            "Digital TDS Meter, pH Meter, Autoclave, Incubator, Laminar Air Flow, Nephelometric Turbidity Meter",
+          steps: [
+            {
+              title: "In-House Lab Setup",
+              desc: "Install autoclave, laminar air flow, incubator, TDS meter conforming to IS 14543.",
+            },
+            {
+              title: "Online Application on ManakOnline",
+              desc: "Submit Form-V with plant layout, water source test report, and machinery invoices.",
+            },
+            {
+              title: "Factory Audit by BIS Officer",
+              desc: "Verification of hygienic manufacturing conditions, testing capability, and sample drawing.",
+            },
+            {
+              title: "Grant of CML License",
+              desc: "Issuance of Certificate of Manufacturing License and inclusion in BIS directory.",
+            },
+          ],
+        },
+        toys: {
+          id: 2,
+          name: "Electric & Non-Electric Toys",
+          sector: "Consumer Goods & Toys",
+          code: "IS 9873 (Parts 1-9) & IS 15644",
+          scheme: "Scheme I (Mandatory ISI Mark)",
+          qco: "Mandatory QCO",
+          timeline: "20 - 30 Days",
+          baseFee: "₹1,000 Application + ₹75,000 Marking Fee",
+          msmeConcession: "₹37,500 (50% Concession for Micro Units)",
+          clause:
+            "IS 9873 Part 1: Mechanical Safety & Heavy Metal Screening (Part 3)",
+          labEquipment:
+            "Sharp Edge Tester, Choking Cylinder gauge, Impact Drop Test rig, Lead/Phthalate chemical screening kit",
+          steps: [
+            {
+              title: "Classification Assessment",
+              desc: "Identify whether mechanical (IS 9873) or electrical (IS 15644) test standards apply.",
+            },
+            {
+              title: "Heavy Metal Screening",
+              desc: "Send prototype to BIS recognized lab for Phthalate and Lead compliance.",
+            },
+            {
+              title: "Factory Inspection",
+              desc: "Audit of assembly line and packaging warnings for age grading (< 3 years).",
+            },
+            {
+              title: "ISI License Issuance",
+              desc: "Grant of CML for applying ISI mark on packaging and retail unit.",
+            },
+          ],
+        },
+        ev: {
+          id: 3,
+          name: "Electric Vehicle (EV) Batteries & Swapping",
+          sector: "Automotive & Clean Energy",
+          code: "IS 17855 : 2022 / AIS-156",
+          scheme: "Compulsory Registration Scheme (CRS)",
+          qco: "Mandatory QCO",
+          timeline: "30 - 45 Days",
+          baseFee: "₹50,000 Govt Fee + Testing Charges",
+          msmeConcession:
+            "Special credit reimbursement under MSME Champions Scheme",
+          clause:
+            "Clause 6: Thermal Runaway, Overcharge & Short-Circuit Safety",
+          labEquipment:
+            "Battery cycler test bench, Thermal chamber (-20°C to +80°C), Vibration simulator, Insulation resistance tester",
+          steps: [
+            {
+              title: "BMS & Thermal Runaway Testing",
+              desc: "Thermal propagation, overcharge protection, and vibration tests at ARAI/ICAT.",
+            },
+            {
+              title: "CRS Portal Submission",
+              desc: "Upload test report issued within 90 days on the BIS CRS portal.",
+            },
+            {
+              title: "Scrutiny & Document Audit",
+              desc: "Review of circuit schematics, UN 38.3 test certifications, and safety interlocks.",
+            },
+            {
+              title: "Registration Grant",
+              desc: "Unique R-number generated for display on battery pack label.",
+            },
+          ],
+        },
+        helmets: {
+          id: 4,
+          name: "Two-Wheeler Protective Helmets",
+          sector: "Automotive Safety",
+          code: "IS 4151 : 2020",
+          scheme: "Scheme I (Mandatory ISI Mark)",
+          qco: "Mandatory QCO",
+          timeline: "25 - 35 Days",
+          baseFee: "₹1,000 Application + ₹1,10,000 Marking Fee",
+          msmeConcession: "₹55,000 (50% Concession for Micro Units)",
+          clause:
+            "Clause 6.3 (Impact Attenuation) & Clause 6.4 (Retention System)",
+          labEquipment:
+            "Drop test tower with flat/hemispherical anvils, Retention test rig, Visor light transmittance spectrometer",
+          steps: [
+            {
+              title: "Shell & EPS Liner Tooling",
+              desc: "Fabricate outer ABS/Fiberglass shell and high-density EPS absorbing liner.",
+            },
+            {
+              title: "Impact & Chin-Strap Validation",
+              desc: "Conduct in-house drop testing up to 300g peak deceleration.",
+            },
+            {
+              title: "BIS Auditor Verification",
+              desc: "Inspection of batch traceability, visor optical clarity, and factory audit.",
+            },
+            {
+              title: "CML License Allotment",
+              desc: "Mandatory ISI marking embossed on back and visor of helmet.",
+            },
+          ],
+        },
+        steel: {
+          id: 5,
+          name: "TMT Steel Rebars & Structural Steel",
+          sector: "Construction & Heavy Industry",
+          code: "IS 1786 : 2008 (Fe 500D / Fe 550D)",
+          scheme: "Scheme I (Mandatory ISI Mark)",
+          qco: "Mandatory QCO",
+          timeline: "35 - 50 Days",
+          baseFee: "₹1,000 Application + Production Tonnage Fee",
+          msmeConcession:
+            "50% rebate on minimum marking fee for small scale rolling mills",
+          clause:
+            "Clause 8.1 (Chemical Composition) & Clause 9.2 (Tensile Properties)",
+          labEquipment:
+            "Universal Testing Machine (UTM 1000kN), Optical Emission Spectrometer (OES for Carbon/Sulphur), Bend/Rebend Mandrels",
+          steps: [
+            {
+              title: "Spectrometer & UTM Setup",
+              desc: "Mandatory UTM for Yield stress and elongation testing.",
+            },
+            {
+              title: "Heat & Batch Sampling",
+              desc: "Sampling across diverse diameter ranges (8mm to 32mm) in presence of auditor.",
+            },
+            {
+              title: "Chemical Verification",
+              desc: "Strict verification of Carbon, Sulphur, and Phosphorus thresholds.",
+            },
+            {
+              title: "Grant of License",
+              desc: "Authorization to emboss ISI mark and grade on every meter length.",
+            },
+          ],
+        },
+        gold: {
+          id: 6,
+          name: "Gold & Silver Jewellery Hallmarking",
+          sector: "Precious Metals & Jewellery",
+          code: "IS 1417 : 2016",
+          scheme: "Mandatory Hallmarking (HUID)",
+          qco: "Mandatory Across 343 Districts",
+          timeline: "7 - 14 Days",
+          baseFee: "₹1,000 Jeweller Registration Fee",
+          msmeConcession:
+            "Zero fee for rural artisans in non-notified clusters",
+          clause:
+            "Clause 4 (Purity Grades: 22K916, 18K750, 14K585) & HUID Order",
+          labEquipment:
+            "XRF Precious Metal Analyzer, Fire Assaying furnace, Cupellation furnace, Micro-laser engraving machine",
+          steps: [
+            {
+              title: "Jeweller Portal Registration",
+              desc: "Apply on Manakonline with trade license and GST certificate.",
+            },
+            {
+              title: "Assaying & Hallmarking Center (AHC) Tagging",
+              desc: "Partner with BIS accredited AHC for purity testing.",
+            },
+            {
+              title: "XRF & Fire Assay Testing",
+              desc: "Verify gold purity down to 0.1% accuracy.",
+            },
+            {
+              title: "6-Digit HUID Laser Tagging",
+              desc: "Laser engraving of unique 6-character code traceable on BIS Care app.",
+            },
+          ],
+        },
+        cement: {
+          id: 7,
+          name: "Ordinary Portland & Pozzolana Cement (OPC / PPC)",
+          sector: "Building Materials",
+          code: "IS 269 : 2015 / IS 1489",
+          scheme: "Scheme I (Mandatory ISI Mark)",
+          qco: "Mandatory QCO",
+          timeline: "40 - 55 Days",
+          baseFee: "₹1,000 Application + Dispatch Tonnage Marking Fee",
+          msmeConcession:
+            "50% rebate for mini-cement grinding units under Udyam",
+          clause:
+            "Clause 5 (Compressive Strength at 3, 7, 28 Days) & Setting Time",
+          labEquipment:
+            "Vicat Apparatus, Le-Chatelier Expansion Mold, Compressive Strength Testing Machine, Blaine Air Permeability Fineness Apparatus",
+          steps: [
+            {
+              title: "Chemical & Physical Lab Setup",
+              desc: "Commission Blaine apparatus, Vicat needle, and vibration machine for mortar cubes.",
+            },
+            {
+              title: "28-Day Strength Validation",
+              desc: "Document compressive strength reaching minimum 53 MPa for OPC 53 Grade.",
+            },
+            {
+              title: "Factory Inspection by BIS",
+              desc: "Inspection of clinker quality, fly-ash blending ratio, and packaging bags.",
+            },
+            {
+              title: "ISI License Issuance",
+              desc: "Mandatory ISI mark and batch date printing on cement HDPE bags.",
+            },
+          ],
+        },
+        plywood: {
+          id: 8,
+          name: "Plywood, Flush Doors & Blockboards",
+          sector: "Wood & Timber Products",
+          code: "IS 303 : 1989 / IS 710",
+          scheme: "Scheme I (Mandatory ISI Mark)",
+          qco: "Mandatory QCO (2024)",
+          timeline: "25 - 40 Days",
+          baseFee: "₹1,000 Application + ₹85,000 Annual Marking Fee",
+          msmeConcession: "₹42,500 (50% Concession for Micro Plywood Units)",
+          clause:
+            "Clause 7 (Moisture Content: 5-15%) & Clause 9 (Glue Shear Strength)",
+          labEquipment:
+            "Hot Water Bath for Boiling Waterproof (BWP) test, Moisture meter, Knife test rig, Tensile shear tester",
+          steps: [
+            {
+              title: "Boiling Water Resistance Test",
+              desc: "Pass 72-hour boiling test without delamination of veneers.",
+            },
+            {
+              title: "Adhesive Quality Inspection",
+              desc: "Verify phenol formaldehyde resin formulation meets IS 848.",
+            },
+            {
+              title: "Factory Plant Audit",
+              desc: "Auditor verifies hot press hydraulic temperature and pressure logs.",
+            },
+            {
+              title: "Grant of ISI Mark",
+              desc: "Stamp ISI logo with MR (Moisture Resistant) or BWP grade.",
+            },
+          ],
+        },
+        lpg: {
+          id: 9,
+          name: "Domestic LPG Gas Cylinders & Regulators",
+          sector: "Petroleum & Gas Equipment",
+          code: "IS 3196 (Part 1) / IS 9798",
+          scheme: "Scheme I (Mandatory ISI Mark)",
+          qco: "Mandatory QCO & PESO Rules",
+          timeline: "35 - 50 Days",
+          baseFee: "₹1,000 Application + Production Marking Fee",
+          msmeConcession: "50% rebate on base application fee",
+          clause:
+            "Clause 7 (Hydrostatic Proof Pressure at 2.5 MPa) & Burst Test",
+          labEquipment:
+            "Hydrostatic test bench (25 bar), Pneumatic leak test water tank, Radiographic X-ray weld inspection, Ultrasonic thickness gauge",
+          steps: [
+            {
+              title: "Hydrostatic & Burst Proofing",
+              desc: "Subject 100% cylinders to 25 bar water pressure test without leakage.",
+            },
+            {
+              title: "PESO & BIS Joint Inspection",
+              desc: "Verify automatic circumferential and longitudinal seam welding.",
+            },
+            {
+              title: "Valve & Tare Weight Calibration",
+              desc: "Ensure precise stamping of tare weight and test due dates.",
+            },
+            {
+              title: "ISI License Certification",
+              desc: "Authorization to emboss BIS mark alongside PESO registration.",
+            },
+          ],
+        },
+        solar: {
+          id: 10,
+          name: "Solar PV Modules & Grid Inverters",
+          sector: "Renewable Energy & Power",
+          code: "IS 14286 / IS/IEC 61730 (Parts 1 & 2)",
+          scheme: "Compulsory Registration Scheme (CRS)",
+          qco: "Mandatory under MNRE ALMM",
+          timeline: "30 - 45 Days",
+          baseFee: "₹75,000 Processing Fee + MNRE Listing",
+          msmeConcession:
+            "25% subsidy on testing costs via IREDA support schemes",
+          clause: "Clause 10.11 (Thermal Cycling 200 cycles) & Damp Heat Test",
+          labEquipment:
+            "Sun Simulator Flash Tester (Class AAA), Electroluminescence (EL) crack tester, Hi-Pot Insulation tester, Environmental chamber",
+          steps: [
+            {
+              title: "NABL Accredited Lab Testing",
+              desc: "Pass PID (Potential Induced Degradation), UV exposure, and Hail impact tests.",
+            },
+            {
+              title: "CRS Application Submission",
+              desc: "Submit test reports issued within 90 days on BIS CRS Portal.",
+            },
+            {
+              title: "MNRE ALMM Enlistment",
+              desc: "Verification of BOM (Bill of Materials) and cell origin for domestic content.",
+            },
+            {
+              title: "R-Number Issuance",
+              desc: "Affix standard R-XXXXXXXX mark on glass laminate & junction box.",
+            },
+          ],
+        },
+        fire: {
+          id: 11,
+          name: "Fire Extinguishers (Portable & Trolley)",
+          sector: "Safety & Fire Protection",
+          code: "IS 15683 : 2018",
+          scheme: "Scheme I (Mandatory ISI Mark)",
+          qco: "Mandatory QCO",
+          timeline: "25 - 35 Days",
+          baseFee: "₹1,000 Application + ₹60,000 Annual Marking Fee",
+          msmeConcession: "₹30,000 (50% Concession for Micro MSMEs)",
+          clause:
+            "Clause 7 (Fire Fire-Rating Class A, B, C) & Hydrostatic Pressure",
+          labEquipment:
+            "Hydrostatic test pump (35 bar), Discharge range measurement yard, Powder compaction test rig, Burst pressure chamber",
+          steps: [
+            {
+              title: "Pressure Cylinder Hydraulic Test",
+              desc: "Test cylinder bodies up to 35 bar without permanent expansion.",
+            },
+            {
+              title: "Fire Extinguishing Rating Trials",
+              desc: "Demonstrate extinguishment of standardized wood crib Class A fires.",
+            },
+            {
+              title: "Safety Valve Scrutiny",
+              desc: "Verify safety release burst disc and pressure indicator accuracy.",
+            },
+            {
+              title: "CML Grant",
+              desc: "Emboss ISI mark, capacity, and manufacturer CML on body.",
+            },
+          ],
+        },
+        footwear: {
+          id: 12,
+          name: "Industrial Safety Footwear & Leather Boots",
+          sector: "Leather & Safety Gear",
+          code: "IS 15298 (Parts 1 to 4) : 2016",
+          scheme: "Scheme I (Footwear QCO)",
+          qco: "Mandatory Footwear QCO (2023)",
+          timeline: "20 - 30 Days",
+          baseFee: "₹1,000 Application + ₹45,000 Marking Fee",
+          msmeConcession:
+            "₹22,500 (50% Concession under Micro Enterprise Category)",
+          clause:
+            "Clause 5.3 (Impact Resistance 200 Joules) & Penetration Resistance",
+          labEquipment:
+            "Steel Toe Cap Impact Rig (200J drop), Sole Flexing Machine (Bennewart), Upper Leather Water Penetration tester, Anti-static meter",
+          steps: [
+            {
+              title: "Toe Cap 200J Drop Test",
+              desc: "Verify clearance under toe cap remains >= 14mm after 200J kinetic impact.",
+            },
+            {
+              title: "Sole Flexing & Abrasion Trials",
+              desc: "Test PU/Rubber sole through 150,000 flex cycles without cracking.",
+            },
+            {
+              title: "Factory Hygiene & Pattern Audit",
+              desc: "Inspection of stitching quality, shank strength, and slip resistance.",
+            },
+            {
+              title: "ISI Mark Licensing",
+              desc: "Stamping of ISI mark and safety code (S1, S2, S3) on sole and tongue.",
+            },
+          ],
+        },
+        cooker: {
+          id: 13,
+          name: "Domestic Pressure Cookers (Aluminium / Steel)",
+          sector: "Kitchen Appliances",
+          code: "IS 2347 : 2017",
+          scheme: "Scheme I (Mandatory ISI Mark)",
+          qco: "Mandatory QCO",
+          timeline: "20 - 30 Days",
+          baseFee: "₹1,000 Application + ₹50,000 Marking Fee",
+          msmeConcession: "₹25,000 (50% Concession for Micro Artisans)",
+          clause: "Clause 7.2 (Operating Pressure 1 bar) & Proof Pressure Test",
+          labEquipment:
+            "Hydraulic burst test bench, Weight valve pressure tester, Fusible metallic plug melting point tester, Gasket thermal test oven",
+          steps: [
+            {
+              title: "Hydraulic Proof Pressure Test",
+              desc: "Pressure test cooker body at twice normal operating pressure.",
+            },
+            {
+              title: "Secondary Safety Verification",
+              desc: "Validate that fusible safety plug melts and releases steam if vent pipe clogs.",
+            },
+            {
+              title: "Lid Interlock & Gasket Check",
+              desc: "Ensure cooker cannot open under residual steam pressure.",
+            },
+            {
+              title: "ISI Embossing",
+              desc: "Laser etch or emboss ISI mark with capacity on cooker base.",
+            },
+          ],
+        },
+        it_goods: {
+          id: 14,
+          name: "Smartphones, Laptops, Tablets & Servers",
+          sector: "Electronics & IT Goods",
+          code: "IS 13252 (Part 1) : 2010",
+          scheme: "Compulsory Registration Scheme (CRS)",
+          qco: "Mandatory MeitY CRO",
+          timeline: "15 - 25 Days",
+          baseFee: "₹35,000 Govt Processing Fee",
+          msmeConcession:
+            "Fast-track exemption on document scrutiny fees for DPIIT startups",
+          clause:
+            "Clause 4 (Electric Shock Protection) & Clause 5 (Wiring & Heat Resistance)",
+          labEquipment:
+            "Earth Continuity Tester, Leakage Current meter, Glow wire flammability apparatus, Drop & Tumble tester",
+          steps: [
+            {
+              title: "Electrical Safety Testing",
+              desc: "Sample tested for electric shock, power adapter insulation, and battery safety.",
+            },
+            {
+              title: "Self-Declaration of Conformity (SDoC)",
+              desc: "Upload test reports to the BIS CRS Portal with manufacturer authorization.",
+            },
+            {
+              title: "MeitY Registration Processing",
+              desc: "Document scrutiny completed within 15 working days.",
+            },
+            {
+              title: "R-Number Allotment",
+              desc: "Affix standard R-XXXXXXXX mark on device back panel and retail box.",
+            },
+          ],
+        },
+        led: {
+          id: 15,
+          name: "Self-Ballasted LED Bulbs & Luminaires",
+          sector: "Electrical & Lighting",
+          code: "IS 16102 (Part 1 & 2) : 2012",
+          scheme: "Compulsory Registration Scheme (CRS)",
+          qco: "Mandatory QCO",
+          timeline: "15 - 20 Days",
+          baseFee: "₹25,000 Govt Fee per model series",
+          msmeConcession:
+            "Special credit reimbursement for MSME lighting clusters",
+          clause:
+            "Clause 8 (Lumen Maintenance) & Clause 12 (Insulation Resistance)",
+          labEquipment:
+            "Integrating Sphere Photometer, Spectroradiometer, High Voltage Flash Tester, Endurance & Ageing test rack",
+          steps: [
+            {
+              title: "Photometric & Safety Testing",
+              desc: "Measure Lumens per Watt, CRI, surge protection (up to 4kV), and power factor.",
+            },
+            {
+              title: "CRS Submission",
+              desc: "File online application with NABL test report.",
+            },
+            {
+              title: "Compliance Review",
+              desc: "Verification of plastic cap flame retardancy (V0 grade).",
+            },
+            {
+              title: "Registration Grant",
+              desc: "Print R-number and BEE Star label on retail packaging.",
+            },
+          ],
+        },
+        switches: {
+          id: 16,
+          name: "Domestic Plugs, Switches & Sockets",
+          sector: "Electrical Hardware",
+          code: "IS 1293 : 2019 / IS 3854",
+          scheme: "Scheme I (Mandatory ISI Mark)",
+          qco: "Mandatory QCO",
+          timeline: "25 - 35 Days",
+          baseFee: "₹1,000 Application + ₹65,000 Annual Marking Fee",
+          msmeConcession: "₹32,500 (50% Concession for Micro MSMEs)",
+          clause:
+            "Clause 14 (Breaking Capacity) & Clause 19 (Electric Strength)",
+          labEquipment:
+            "Switch endurance test rig (40,000 operations), High Voltage Breakdown tester, Temperature rise test apparatus, Ball pressure test rig",
+          steps: [
+            {
+              title: "Endurance Endurance Rig Testing",
+              desc: "Switch mechanism tested through 40,000 continuous make-break operations.",
+            },
+            {
+              title: "Temperature Rise Trial",
+              desc: "Ensure terminal temperature rise does not exceed 45°C under rated current.",
+            },
+            {
+              title: "Audit of Moulding Plant",
+              desc: "Inspect polycarbonate and urea-formaldehyde flame retardant materials.",
+            },
+            {
+              title: "Grant of CML License",
+              desc: "Mould ISI mark onto front plate and internal switch base.",
+            },
+          ],
+        },
+        cattle_feed: {
+          id: 17,
+          name: "Compounded Cattle Feed & Dairy Nutrition",
+          sector: "Agriculture & Animal Feed",
+          code: "IS 2052 : 2009",
+          scheme: "Scheme I (ISI Mark)",
+          qco: "Voluntary / High Priority State Tenders",
+          timeline: "20 - 30 Days",
+          baseFee: "₹1,000 Application + ₹40,000 Marking Fee",
+          msmeConcession: "₹20,000 (50% Concession for Dairy Cooperatives)",
+          clause:
+            "Clause 4 (Crude Protein min 20%, Crude Fat min 2.5%, Acid Insoluble Ash max 3.5%)",
+          labEquipment:
+            "Kjeldahl Nitrogen/Protein Analyzer, Soxhlet Fat Extraction apparatus, Muffle Furnace (600°C for Ash), Moisture balance",
+          steps: [
+            {
+              title: "Nutritional Lab Commissioning",
+              desc: "Set up protein distillation, crude fiber, and aflatoxin screening equipment.",
+            },
+            {
+              title: "Aflatoxin B1 Analysis",
+              desc: "Verify toxic fungal contaminants are below 20 ppb (parts per billion).",
+            },
+            {
+              title: "Mill Plant Sanitization Inspection",
+              desc: "Verify hygienic mixing, pelletizing, and moisture-proof bagging.",
+            },
+            {
+              title: "ISI License Certification",
+              desc: "Print ISI standard mark on 50 kg gunny / HDPE feed bags.",
+            },
+          ],
+        },
+        fertilizers: {
+          id: 18,
+          name: "Chemical Fertilizers (Urea & DAP)",
+          sector: "Chemicals & Agro-Nutrients",
+          code: "IS 540 / IS 8358 / FCO Rules",
+          scheme: "Scheme I (Mandatory ISI Mark)",
+          qco: "Mandatory under Fertilizer Control Order",
+          timeline: "30 - 45 Days",
+          baseFee: "₹1,000 Application + Production Tonnage Marking Fee",
+          msmeConcession:
+            "50% rebate for small bio-fertilizer and mixing plants",
+          clause: "Clause 3 (Total Nitrogen min 46% in Urea, P2O5 in DAP)",
+          labEquipment:
+            "Spectrophotometer for Phosphorus, Auto-titrator for Nitrogen, Biuret colorimeter, Moisture Karl Fischer titrator",
+          steps: [
+            {
+              title: "Biuret & Moisture Testing",
+              desc: "Verify biuret content in urea is strictly under 1.5% to prevent plant toxicity.",
+            },
+            {
+              title: "Fertilizer Control Order Compliance",
+              desc: "Dual inspection by Department of Fertilizers and BIS officer.",
+            },
+            {
+              title: "Granulometry Sieve Check",
+              desc: "Ensure 90% granules pass through 2.8mm sieve and retained on 1mm sieve.",
+            },
+            {
+              title: "Grant of License",
+              desc: "Authorization to print ISI standard logo on retail agricultural fertilizer bags.",
+            },
+          ],
+        },
+        ppe: {
+          id: 19,
+          name: "Medical Coveralls, N95 Masks & Nitrile Gloves",
+          sector: "Medical Devices & Healthcare",
+          code: "IS 16289 / IS 15354 / IS 9473",
+          scheme: "Scheme I (ISI Mark)",
+          qco: "Mandatory Medical QCO",
+          timeline: "20 - 30 Days",
+          baseFee: "₹1,000 Application + ₹50,000 Marking Fee",
+          msmeConcession: "₹25,000 (50% Concession for Micro Manufacturers)",
+          clause:
+            "Clause 5 (Bacterial Filtration Efficiency BFE >= 99%, Synthetic Blood Penetration)",
+          labEquipment:
+            "Particulate Filtration Efficiency (PFE) tester, Synthetic Blood Splash penetration rig, Tensile elongation tester, Cleanroom particle counter",
+          steps: [
+            {
+              title: "Synthetic Blood Penetration Trial",
+              desc: "Confirm fabric resists liquid blood strike-through at 16 kPa pressure.",
+            },
+            {
+              title: "Particle Filtration Testing",
+              desc: "Ensure N95 filter media captures >= 95% of 0.3-micron sodium chloride aerosols.",
+            },
+            {
+              title: "Class 10,000 Cleanroom Audit",
+              desc: "Verify bio-burden limits and sterile sealing protocols.",
+            },
+            {
+              title: "ISI License Award",
+              desc: "Authorization to brand medical gear with ISI certified medical symbol.",
+            },
+          ],
+        },
+        tyres: {
+          id: 20,
+          name: "Automotive Pneumatic Tyres & Tubes",
+          sector: "Automotive Components",
+          code: "IS 15633 (Two-Wheeler) / IS 15636 (Car Tyres)",
+          scheme: "Scheme I (Mandatory ISI Mark)",
+          qco: "Mandatory Automotive QCO",
+          timeline: "35 - 50 Days",
+          baseFee: "₹1,000 Application + Dispatch Tonnage Marking Fee",
+          msmeConcession:
+            "50% rebate on base marking fee for retreading and local units",
+          clause:
+            "Clause 6 (High-Speed Endurance at 210 km/h) & Bead Unseating Test",
+          labEquipment:
+            "Tyre Endurance Drum Test Rig, Bead Unseating test machine, Tyre plunger energy burst tester, Rubber rheometer",
+          steps: [
+            {
+              title: "High-Speed Drum Endurance Test",
+              desc: "Run tyres under full load on drum rig up to speed symbol rating.",
+            },
+            {
+              title: "Bead Unseating Force Evaluation",
+              desc: "Ensure tyre bead does not unseat from rim under lateral cornering loads.",
+            },
+            {
+              title: "Rubber Compound Vulcanization Audit",
+              desc: "Audit curing presses, vulcanization time-temperature charts, and ply angles.",
+            },
+            {
+              title: "Grant of ISI Mark",
+              desc: "Mandatory moulding of ISI logo and CML number onto tyre sidewall.",
+            },
+          ],
+        },
+      };
+
+      // TAB NAVIGATION
+      function switchSection(secId) {
+        document
+          .querySelectorAll("main > section")
+          .forEach((sec) => sec.classList.add("hidden"));
+        document.getElementById("sec-" + secId).classList.remove("hidden");
+
+        document.querySelectorAll(".nav-btn").forEach((btn) => {
+          btn.classList.remove("bg-white", "text-bis-navy", "shadow-sm");
+          btn.classList.add("text-slate-600");
+        });
+
+        const activeBtn = document.getElementById("nav-" + secId);
+        if (activeBtn) {
+          activeBtn.classList.add("bg-white", "text-bis-navy", "shadow-sm");
+          activeBtn.classList.remove("text-slate-600");
+        }
+
+        if (secId === "scanner") loadScanSample("valid_isi");
+        if (secId === "msme") generateRoadmap();
+        if (secId === "standards") populateStandardsTable();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      // POPULATE 20 BUSINESSES INTO SELECT DROPDOWN & HOME PILLS
+      function initBusinessesUI() {
+        const select = document.getElementById("roadmapSector");
+        const pillsContainer = document.getElementById("homePillsContainer");
+        const chatPresetsContainer = document.getElementById("chatPresetsList");
+
+        select.innerHTML = "";
+        pillsContainer.innerHTML = "";
+        chatPresetsContainer.innerHTML = "";
+
+        let i = 0;
+        for (const [key, b] of Object.entries(businesses)) {
+          // Populate Roadmap Select
+          const opt = document.createElement("option");
+          opt.value = key;
+          opt.innerText = `${b.id}. ${b.name} (${b.code})`;
+          select.appendChild(opt);
+
+          // Populate Home Quick Pills
+          const pill = document.createElement("button");
+          pill.className =
+            "px-3 py-1.5 rounded-lg border border-slate-200 hover:border-blue-500 hover:bg-blue-50 text-slate-700 text-xs font-semibold transition flex items-center space-x-1.5 shadow-sm";
+          pill.innerHTML = `<span>${b.name.split("&")[0].trim()}</span> <span class="text-[10px] text-blue-600 font-mono">(${b.code.split(":")[0].trim()})</span>`;
+          pill.onclick = () => {
+            select.value = key;
+            switchSection("msme");
+            generateRoadmap();
+          };
+          pillsContainer.appendChild(pill);
+
+          // Populate Chat Presets (Top 5 featured)
+          if (i < 5) {
+            const chatBtn = document.createElement("button");
+            chatBtn.className =
+              "w-full text-left p-2.5 rounded-lg border border-slate-100 hover:border-blue-300 hover:bg-blue-50/50 text-xs font-medium text-slate-700 transition flex justify-between items-center group";
+            chatBtn.innerHTML = `
+            <span><i class="fa-solid fa-circle-check text-blue-500 mr-2"></i>${b.name.split("(")[0].trim()} (${b.code.split(":")[0].trim()})</span>
+            <i class="fa-solid fa-chevron-right text-slate-400 group-hover:text-blue-500 text-[10px]"></i>
+          `;
+            chatBtn.onclick = () => askPreset(key);
+            chatPresetsContainer.appendChild(chatBtn);
+          }
+          i++;
+        }
+      }
+
+      // POPULATE 20 STANDARDS IN DIRECTORY TABLE
+      function populateStandardsTable() {
+        const tbody = document.getElementById("standardsTableBody");
+        tbody.innerHTML = "";
+
+        for (const [key, b] of Object.entries(businesses)) {
+          const tr = document.createElement("tr");
+          tr.className = "hover:bg-slate-50 transition";
+          tr.innerHTML = `
+          <td class="p-3 font-bold text-slate-400">${b.id}</td>
+          <td class="p-3 font-mono font-bold text-blue-700">${b.code}</td>
+          <td class="p-3 font-medium text-slate-800">${b.name}</td>
+          <td class="p-3 text-slate-600">${b.sector}</td>
+          <td class="p-3"><span class="px-2 py-0.5 rounded bg-slate-100 border border-slate-200 font-semibold text-[11px]">${b.scheme}</span></td>
+          <td class="p-3"><span class="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold text-[10px]">${b.qco}</span></td>
+          <td class="p-3 text-center">
+            <button onclick="selectAndOpenPdf('${key}')" class="px-2.5 py-1 bg-blue-50 hover:bg-blue-100 text-blue-700 rounded font-bold text-[11px] border border-blue-200 transition">
+              <i class="fa-solid fa-file-pdf mr-1 text-rose-500"></i> View IS Spec
+            </button>
+          </td>
+        `;
+          tbody.appendChild(tr);
+        }
+      }
+
+      function selectAndOpenPdf(key) {
+        selectedBusinessKey = key;
+        document.getElementById("roadmapSector").value = key;
+        openPdfViewer("spec");
+      }
+
+      function filterStandards() {
+        const query = document
+          .getElementById("standardSearchInput")
+          .value.toLowerCase();
+        const rows = document.querySelectorAll("#standardsTableBody tr");
+        rows.forEach((row) => {
+          const text = row.innerText.toLowerCase();
+          row.style.display = text.includes(query) ? "" : "none";
+        });
+      }
+
+      // MSME ROADMAP GENERATOR
+      function generateRoadmap() {
+        const sectorKey = document.getElementById("roadmapSector").value;
+        const scale = document.getElementById("roadmapScale").value;
+        selectedBusinessKey = sectorKey;
+        const data = businesses[sectorKey] || businesses.water;
+
+        let effectiveFee = data.baseFee;
+        if (scale === "micro") {
+          effectiveFee = `<span class="text-emerald-700 font-bold">${data.msmeConcession} (After 50% Micro MSME Concession)</span>`;
+        } else if (scale === "small") {
+          effectiveFee = `<span class="text-emerald-700 font-bold">20% Concession under Small Enterprise Slabs</span>`;
+        }
+
+        document.getElementById("roadmapOutput").innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-blue-50 p-4 rounded-xl border border-blue-200 space-y-1">
+            <span class="text-[10px] font-bold text-blue-600 uppercase">Applicable Standard</span>
+            <h4 class="text-sm font-extrabold text-blue-900">${data.code}</h4>
+            <p class="text-xs text-blue-700">${data.scheme}</p>
+          </div>
+          <div class="bg-amber-50 p-4 rounded-xl border border-amber-200 space-y-1">
+            <span class="text-[10px] font-bold text-amber-600 uppercase">Estimated Turnaround</span>
+            <h4 class="text-sm font-extrabold text-amber-900">${data.timeline}</h4>
+            <p class="text-xs text-amber-700">From application to grant of license</p>
+          </div>
+          <div class="bg-emerald-50 p-4 rounded-xl border border-emerald-200 space-y-1">
+            <span class="text-[10px] font-bold text-emerald-600 uppercase">Effective Govt Fee</span>
+            <h4 class="text-sm font-extrabold text-emerald-900">${effectiveFee}</h4>
+            <p class="text-xs text-emerald-700">Under Ministry of MSME Subsidies</p>
+          </div>
+        </div>
+
+        <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+          <h4 class="text-xs font-bold text-slate-700 uppercase flex items-center">
+            <i class="fa-solid fa-microscope text-purple-600 mr-2"></i> Required Factory Quality Testing Equipment
+          </h4>
+          <p class="text-xs text-slate-600 bg-white p-3 rounded-lg border border-slate-200 font-medium leading-relaxed">
+            ${data.labEquipment}
+          </p>
+        </div>
+
+        <div class="bg-white p-5 rounded-xl border border-slate-200 space-y-4">
+          <div class="flex justify-between items-center">
+            <h4 class="text-sm font-bold text-bis-navy flex items-center">
+              <i class="fa-solid fa-list-check text-blue-600 mr-2"></i> Step-by-Step Conformity Roadmap for ${data.name}
+            </h4>
+            <button onclick="openPdfViewer('formV')" class="text-xs font-bold text-rose-600 hover:text-rose-800 flex items-center bg-rose-50 px-3 py-1.5 rounded-lg border border-rose-200 transition">
+              <i class="fa-solid fa-file-arrow-down mr-1.5"></i> Download Form-V (.pdf)
+            </button>
+          </div>
+          <div class="relative border-l-2 border-blue-500 ml-3 space-y-6 pl-5">
+            ${data.steps
+              .map(
+                (step, idx) => `
+              <div class="relative">
+                <span class="absolute -left-[27px] top-0 w-4 h-4 rounded-full bg-blue-600 border-2 border-white shadow text-[9px] text-white flex items-center justify-center font-bold">${idx + 1}</span>
+                <h5 class="text-xs font-bold text-slate-800">${step.title}</h5>
+                <p class="text-xs text-slate-600 mt-0.5">${step.desc}</p>
+              </div>
+            `,
+              )
+              .join("")}
+          </div>
+        </div>
+      `;
+      }
+
+      // CHAT & AI COPILOT LOGIC
+      function askPreset(key) {
+        const data = businesses[key];
+        if (!data) return;
+        selectedBusinessKey = key;
+        appendUserMessage(
+          `What are the mandatory BIS requirements and lab equipment for ${data.name}?`,
+        );
+        simulateBotTyping(() => appendBotMessage(data));
+      }
+
+      function handleUserSubmit(e) {
+        e.preventDefault();
+        const input = document.getElementById("userInput");
+        const text = input.value.trim();
+        if (!text) return;
+        appendUserMessage(text);
+        input.value = "";
+
+        const lower = text.toLowerCase();
+        if (
+          lower.includes("pdf") ||
+          lower.includes("form") ||
+          lower.includes("download")
+        ) {
+          simulateBotTyping(() => appendPdfLauncherMessage());
+          return;
+        }
+
+        // Match against 20 businesses
+        let match = businesses.water;
+        for (const [k, b] of Object.entries(businesses)) {
+          const words = (b.name + " " + b.code + " " + b.sector).toLowerCase();
+          if (
+            words
+              .split(/[\s,()]+/)
+              .some((w) => w.length > 3 && lower.includes(w))
+          ) {
+            match = b;
+            selectedBusinessKey = k;
+            break;
+          }
+        }
+
+        simulateBotTyping(() => appendBotMessage(match));
+      }
+
+      function appendUserMessage(text) {
+        const chat = document.getElementById("chatMessages");
+        const userDiv = document.createElement("div");
+        userDiv.className = "flex items-start justify-end space-x-2";
+        userDiv.innerHTML = `
+        <div class="space-y-1 max-w-[85%] text-right">
+          <div class="bg-blue-600 text-white p-3 rounded-2xl rounded-tr-none shadow-sm text-xs sm:text-sm text-left">
+            <p>${text}</p>
+          </div>
+          <span class="text-[10px] text-slate-400 pr-1">You • Just now</span>
+        </div>
+      `;
+        chat.appendChild(userDiv);
+        chat.scrollTop = chat.scrollHeight;
+      }
+
+      function simulateBotTyping(callback) {
+        const chat = document.getElementById("chatMessages");
+        const typingDiv = document.createElement("div");
+        typingDiv.id = "typingIndicator";
+        typingDiv.className =
+          "flex items-center space-x-2 text-slate-400 text-xs py-2";
+        typingDiv.innerHTML = `
+        <div class="w-6 h-6 rounded-full bg-bis-navy flex items-center justify-center text-amber-400 text-[10px]">
+          <i class="fa-solid fa-sparkles"></i>
+        </div>
+        <span>Searching 20+ Quality Control Order gazettes & clause indices...</span>
+      `;
+        chat.appendChild(typingDiv);
+        chat.scrollTop = chat.scrollHeight;
+
+        setTimeout(() => {
+          const ind = document.getElementById("typingIndicator");
+          if (ind) ind.remove();
+          callback();
+        }, 500);
+      }
+
+      function appendBotMessage(data) {
+        const chat = document.getElementById("chatMessages");
+        const botDiv = document.createElement("div");
+        botDiv.className = "flex items-start space-x-3";
+        botDiv.innerHTML = `
+        <div class="w-7 h-7 rounded-full bg-bis-navy flex-shrink-0 flex items-center justify-center text-amber-400 text-xs">
+          <i class="fa-solid fa-shield"></i>
+        </div>
+        <div class="space-y-1 max-w-[88%]">
+          <div class="bg-white p-4 rounded-2xl rounded-tl-none border border-slate-200 shadow-sm text-slate-700 text-xs sm:text-sm space-y-3">
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-2">
+              <div>
+                <span class="text-[11px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200 mr-1.5">${data.code}</span>
+                <span class="text-[10px] text-slate-500 font-medium">${data.scheme}</span>
+              </div>
+              <span class="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full flex items-center">
+                <i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i> Verified Clause
+              </span>
+            </div>
+            <div>
+              <h4 class="font-bold text-bis-navy text-sm mb-1">${data.name}</h4>
+              <p class="text-[11px] text-amber-800 font-semibold mb-2 bg-amber-50/70 p-1.5 rounded border border-amber-200/50">
+                <i class="fa-solid fa-bookmark mr-1"></i> Key Clause: ${data.clause}
+              </p>
+              <p class="text-xs text-slate-600"><strong>Required Testing Equipment:</strong> ${data.labEquipment}</p>
+              <p class="text-xs text-emerald-700 font-semibold mt-1"><strong>Govt Fee & Subsidy:</strong> ${data.msmeConcession}</p>
+            </div>
+            <div class="pt-2 border-t border-slate-100 flex items-center justify-between text-[11px]">
+              <button onclick="selectAndOpenPdf('${Object.keys(businesses).find((k) => businesses[k] === data) || "water"}')" class="text-rose-600 hover:text-rose-800 font-bold flex items-center bg-rose-50 hover:bg-rose-100 px-3 py-1.5 rounded-lg border border-rose-200 transition">
+                <i class="fa-solid fa-file-arrow-down mr-1.5 text-rose-600 text-sm"></i> Download Specification PDF
+              </button>
+              <button onclick="speakText('${data.name}. Certified under ${data.code}.')" class="text-slate-500 hover:text-bis-navy flex items-center">
+                <i class="fa-solid fa-volume-high mr-1 text-amber-500"></i> Read Out
+              </button>
+            </div>
+          </div>
+          <span class="text-[10px] text-slate-400 pl-1">CertiMind Hybrid RAG • Clause-verified</span>
+        </div>
+      `;
+        chat.appendChild(botDiv);
+        chat.scrollTop = chat.scrollHeight;
+      }
+
+      function appendPdfLauncherMessage() {
+        const chat = document.getElementById("chatMessages");
+        const botDiv = document.createElement("div");
+        botDiv.className = "flex items-start space-x-3";
+        botDiv.innerHTML = `
+        <div class="w-7 h-7 rounded-full bg-bis-navy flex-shrink-0 flex items-center justify-center text-amber-400 text-xs"><i class="fa-solid fa-shield"></i></div>
+        <div class="space-y-1 max-w-[88%]">
+          <div class="bg-white p-4 rounded-2xl rounded-tl-none border border-slate-200 shadow-sm text-slate-700 text-xs sm:text-sm space-y-3">
+            <h4 class="font-bold text-bis-navy text-sm">Download Official BIS Application Forms & Standards</h4>
+            <div class="flex flex-wrap gap-2 pt-1">
+              <button onclick="openPdfViewer('formV')" class="px-3 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-bold text-xs flex items-center space-x-1.5 transition shadow">
+                <i class="fa-solid fa-file-arrow-down text-white"></i><span>Download Form-V (Licence PDF)</span>
+              </button>
+              <button onclick="openPdfViewer('spec')" class="px-3 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-lg font-bold text-xs flex items-center space-x-1.5 transition">
+                <i class="fa-solid fa-file-lines text-blue-300"></i><span>Download IS Specification PDF</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+        chat.appendChild(botDiv);
+        chat.scrollTop = chat.scrollHeight;
+        openPdfViewer("formV");
+      }
+
+      function clearChat() {
+        document.getElementById("chatMessages").innerHTML = `
+        <div class="flex items-start space-x-3">
+          <div class="w-7 h-7 rounded-full bg-bis-navy flex-shrink-0 flex items-center justify-center text-amber-400 text-xs"><i class="fa-solid fa-shield"></i></div>
+          <div class="space-y-1 max-w-[85%]">
+            <div class="bg-white p-3.5 rounded-2xl rounded-tl-none border border-slate-200 shadow-sm text-slate-700 text-xs sm:text-sm">
+              <p class="font-semibold text-bis-navy mb-1">Conversation cleared.</p>
+              <p>Ask another question or select an inquiry preset to test!</p>
+            </div>
+          </div>
+        </div>
+      `;
+      }
+
+      function triggerVoiceInput() {
+        const status = document.getElementById("voiceStatus");
+        const micBtn = document.getElementById("micBtn");
+        if ("webkitSpeechRecognition" in window) {
+          const recognition = new webkitSpeechRecognition();
+          recognition.lang = currentLanguage === "hi" ? "hi-IN" : "en-IN";
+          recognition.onstart = () => {
+            status.classList.remove("hidden");
+            micBtn.classList.add("bg-rose-500", "text-white", "animate-pulse");
+          };
+          recognition.onresult = (e) => {
+            document.getElementById("userInput").value =
+              e.results[0][0].transcript;
+            status.classList.add("hidden");
+            micBtn.classList.remove(
+              "bg-rose-500",
+              "text-white",
+              "animate-pulse",
+            );
+          };
+          recognition.onerror = () => simulateMockVoice();
+          recognition.start();
+        } else {
+          simulateMockVoice();
+        }
+      }
+
+      function simulateMockVoice() {
+        const status = document.getElementById("voiceStatus");
+        status.classList.remove("hidden");
+        setTimeout(() => {
+          document.getElementById("userInput").value =
+            "What is the fee for BIS ISI licence for electric vehicle batteries under Udyam MSME scheme?";
+          status.classList.add("hidden");
+        }, 1000);
+      }
+
+      function speakText(text) {
+        if ("speechSynthesis" in window) {
+          window.speechSynthesis.speak(new SpeechSynthesisUtterance(text));
+        }
+      }
+
+      function setRole(role) {
+        currentRole = role;
+        const roleBadge = document.getElementById("roleBadge");
+        const consumerBtn = document.getElementById("roleBtn-consumer");
+        const industryBtn = document.getElementById("roleBtn-industry");
+
+        if (role === "consumer") {
+          roleBadge.innerHTML =
+            '<i class="fa-solid fa-user-check mr-1"></i> Consumer Mode';
+          roleBadge.className =
+            "text-xs px-2.5 py-0.5 rounded-full font-semibold bg-blue-100 text-blue-800";
+          consumerBtn.className =
+            "p-2 rounded-lg border-2 border-blue-500 bg-blue-50 text-blue-800 font-medium text-left transition flex items-center space-x-2";
+          industryBtn.className =
+            "p-2 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-700 font-medium text-left transition flex items-center space-x-2";
+        } else {
+          roleBadge.innerHTML =
+            '<i class="fa-solid fa-industry mr-1"></i> Industry & MSME Mode';
+          roleBadge.className =
+            "text-xs px-2.5 py-0.5 rounded-full font-semibold bg-emerald-100 text-emerald-800";
+          industryBtn.className =
+            "p-2 rounded-lg border-2 border-emerald-500 bg-emerald-50 text-emerald-800 font-medium text-left transition flex items-center space-x-2";
+          consumerBtn.className =
+            "p-2 rounded-lg border border-slate-200 hover:bg-slate-50 text-slate-700 font-medium text-left transition flex items-center space-x-2";
+        }
+      }
+
+      // SCANNER SAMPLES
+      const scanSamples = {
+        valid_isi: {
+          type: "ISI Mark (Scheme I)",
+          title: "Himalayan Pure Mineral Water - 1L",
+          code: "IS 14543 : 2016",
+          license: "CML-8492019",
+          status: "VALID & ACTIVE",
+          statusClass: "text-emerald-700 bg-emerald-100 border-emerald-300",
+          manufacturer: "Aqua Organics Beverages Pvt. Ltd.",
+          factory: "Plot 42, Industrial Area, Haridwar, Uttarakhand",
+          validTill: "31-Mar-2027",
+          icon: "fa-certificate text-blue-500",
+          simulatedImage: `
+          <div class="border-2 border-dashed border-emerald-400 p-4 rounded-xl bg-slate-900/90 text-center space-y-2">
+            <div class="text-4xl text-amber-400 font-extrabold tracking-widest"><i class="fa-solid fa-certificate"></i> ISI</div>
+            <div class="text-xs font-mono tracking-wider text-emerald-400 font-bold">IS 14543</div>
+            <div class="text-[11px] font-mono text-slate-300 bg-slate-800 px-2 py-1 rounded">CM/L: 8492019</div>
+            <div class="text-[10px] text-slate-400">OCR Confidence: 99.4%</div>
+          </div>
+        `,
+        },
+        fake_isi: {
+          type: "Counterfeit Alert",
+          title: "Speedy Helmet Classic",
+          code: "IS 4151 (Forged)",
+          license: "CML-0000000 (Non-Existent)",
+          status: "FORGED / INVALID LICENSE",
+          statusClass: "text-rose-700 bg-rose-100 border-rose-300",
+          manufacturer: "Unregistered Entity / Grey Market",
+          factory: "Unknown / Mismatched Address",
+          validTill: "N/A - Not Registered in BIS Care",
+          icon: "fa-triangle-exclamation text-rose-500",
+          simulatedImage: `
+          <div class="border-2 border-dashed border-rose-500 p-4 rounded-xl bg-slate-900/90 text-center space-y-2">
+            <div class="text-4xl text-rose-500 font-extrabold tracking-widest"><i class="fa-solid fa-triangle-exclamation"></i> FAKE</div>
+            <div class="text-xs font-mono tracking-wider text-rose-400 font-bold">IS 4151 (Misused)</div>
+            <div class="text-[11px] font-mono text-rose-300 bg-rose-950/80 px-2 py-1 rounded border border-rose-800">CM/L: 9999999 (Invalid)</div>
+            <div class="text-[10px] text-slate-400">OCR Confidence: 96.1%</div>
+          </div>
+        `,
+        },
+        valid_huid: {
+          type: "Gold Jewellery Hallmark",
+          title: "22K Gold Bangle (91.6% Pure)",
+          code: "IS 1417 : 2016",
+          license: "HUID: AZ92B7",
+          status: "AUTHENTIC HALLMARK",
+          statusClass: "text-amber-800 bg-amber-100 border-amber-300",
+          manufacturer: "Kalyan Jewellers Center #14",
+          factory: "AHC Center: Tanishq / MMTC PAMP Lab, Mumbai",
+          validTill: "Hallmarked on: 14-Aug-2025",
+          icon: "fa-gem text-amber-500",
+          simulatedImage: `
+          <div class="border-2 border-dashed border-amber-400 p-4 rounded-xl bg-slate-900/90 text-center space-y-2">
+            <div class="text-3xl text-amber-400 font-extrabold"><i class="fa-solid fa-ring"></i> 22K916</div>
+            <div class="text-xs font-mono tracking-widest text-amber-300 font-bold">HUID: AZ92B7</div>
+            <div class="text-[11px] font-mono text-slate-300 bg-slate-800 px-2 py-1 rounded">AHC Code: AHC-MH-042</div>
+            <div class="text-[10px] text-slate-400">Micro-Laser OCR Confidence: 98.7%</div>
+          </div>
+        `,
+        },
+      };
+
+      function loadScanSample(key) {
+        const data = scanSamples[key];
+        if (!data) return;
+
+        ["valid_isi", "fake_isi", "valid_huid"].forEach((k) => {
+          const btn = document.getElementById(
+            "btn-sample-" +
+              (k === "valid_isi" ? "1" : k === "fake_isi" ? "2" : "3"),
+          );
+          if (k === key) {
+            btn.className =
+              "sample-btn px-3 py-1.5 rounded-lg text-xs font-semibold border-2 border-blue-500 bg-blue-50 text-blue-800 transition";
+          } else {
+            btn.className =
+              "sample-btn px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 text-slate-600 hover:bg-slate-50 transition";
+          }
+        });
+
+        document.getElementById("samplePreview").innerHTML =
+          data.simulatedImage;
+        const res = document.getElementById("scanResultCard");
+        res.innerHTML = `
+        <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+          <div class="flex items-center space-x-2">
+            <i class="fa-solid ${data.icon} text-lg"></i>
+            <div>
+              <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">${data.type}</span>
+              <h3 class="text-base font-extrabold text-bis-navy">${data.title}</h3>
+            </div>
+          </div>
+          <span class="px-2.5 py-1 text-xs font-extrabold rounded-lg border ${data.statusClass}">${data.status}</span>
+        </div>
+        <div class="grid grid-cols-2 gap-3 text-xs">
+          <div class="bg-white p-2.5 rounded-xl border border-slate-200"><span class="text-slate-400 block text-[10px] uppercase font-bold">Standard Spec</span><span class="font-bold text-slate-800">${data.code}</span></div>
+          <div class="bg-white p-2.5 rounded-xl border border-slate-200"><span class="text-slate-400 block text-[10px] uppercase font-bold">License / HUID</span><span class="font-mono font-bold text-blue-700">${data.license}</span></div>
+          <div class="bg-white p-2.5 rounded-xl border border-slate-200 col-span-2"><span class="text-slate-400 block text-[10px] uppercase font-bold">Manufacturer</span><span class="font-medium text-slate-800">${data.manufacturer}</span></div>
+          <div class="bg-white p-2.5 rounded-xl border border-slate-200 col-span-2"><span class="text-slate-400 block text-[10px] uppercase font-bold">Factory Address</span><span class="font-medium text-slate-600">${data.factory}</span></div>
+          <div class="bg-white p-2.5 rounded-xl border border-slate-200"><span class="text-slate-400 block text-[10px] uppercase font-bold">Validity</span><span class="font-semibold text-slate-700">${data.validTill}</span></div>
+          <div class="bg-white p-2.5 rounded-xl border border-slate-200"><span class="text-slate-400 block text-[10px] uppercase font-bold">Registry API</span><span class="font-bold text-emerald-700 flex items-center"><i class="fa-solid fa-shield-check mr-1 text-emerald-600"></i> BIS Care Live</span></div>
+        </div>
+      `;
+      }
+
+      function reScan() {
+        const overlay = document.getElementById("scanOverlay");
+        overlay.classList.add("animate-pulse");
+        setTimeout(() => {
+          overlay.classList.remove("animate-pulse");
+          alert(
+            "OCR Frame Re-scanned and validated against live BIS repository.",
+          );
+        }, 600);
+      }
+
+      // DYNAMIC PDF VIEWER & 1-CLICK DOWNLOADER FOR SELECTED BUSINESS
+      function openPdfViewer(docType) {
+        currentPdfDoc = docType;
+        document.getElementById("pdfModal").classList.remove("hidden");
+        renderPdfContent(docType);
+      }
+
+      function closePdfViewer() {
+        document.getElementById("pdfModal").classList.add("hidden");
+      }
+
+      function switchPdfView(type) {
+        currentPdfDoc = type;
+        const btnFormV = document.getElementById("btnPdfTab-formV");
+        const btnSpec = document.getElementById("btnPdfTab-spec");
+
+        if (type === "formV") {
+          btnFormV.className =
+            "px-2.5 py-1 rounded bg-blue-600 text-white font-semibold text-xs transition";
+          btnSpec.className =
+            "px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs transition";
+        } else {
+          btnSpec.className =
+            "px-2.5 py-1 rounded bg-blue-600 text-white font-semibold text-xs transition";
+          btnFormV.className =
+            "px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold text-xs transition";
+        }
+        renderPdfContent(type);
+      }
+
+      function renderPdfContent(type) {
+        const container = document.getElementById("pdfDynamicContent");
+        const titleEl = document.getElementById("pdfDocTitle");
+        const b = businesses[selectedBusinessKey] || businesses.water;
+
+        if (type === "formV") {
+          titleEl.innerText = `BIS FORM - V: Application for Grant of Licence (${b.code})`;
+          container.innerHTML = `
+          <div class="border-b-2 border-slate-800 pb-4 text-center space-y-1">
+            <div class="flex justify-between items-center mb-1">
+              <span class="text-[10px] font-bold text-slate-500">FORM - V (REGULATION 3)</span>
+              <span class="text-[10px] font-mono text-slate-600">REF: BIS/ND/2026/09481</span>
+            </div>
+            <div class="w-12 h-12 mx-auto rounded-full bg-slate-900 text-amber-400 flex items-center justify-center text-xl font-bold mb-1">
+              <i class="fa-solid fa-certificate"></i>
+            </div>
+            <h2 class="text-base font-extrabold uppercase tracking-wide text-slate-900">भारतीय मानक ब्यूरो</h2>
+            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-800 font-cinzel">BUREAU OF INDIAN STANDARDS</h3>
+            <p class="text-[10px] text-slate-600">Manak Bhawan, 9 Bahadur Shah Zafar Marg, New Delhi 110002 • www.bis.gov.in</p>
+            <div class="mt-2 py-1 px-3 bg-slate-100 rounded inline-block border border-slate-300 text-slate-800 font-bold text-[11px] uppercase tracking-wide">
+              APPLICATION FOR GRANT OF LICENCE TO USE OR APPLY A STANDARD MARK
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h4 class="font-bold text-slate-900 uppercase tracking-wider border-b border-slate-300 pb-1 text-xs">1. General Applicant Information</h4>
+            <table class="w-full text-[11px] border-collapse">
+              <tr class="border-b border-slate-200"><td class="py-1.5 font-bold text-slate-600 w-1/3">Manufacturing Entity:</td><td class="py-1.5 font-semibold text-slate-900">Bharat Quality Units Private Limited</td></tr>
+              <tr class="border-b border-slate-200"><td class="py-1.5 font-bold text-slate-600">Works Address:</td><td class="py-1.5 text-slate-800">Plot No. 18-A, Phase-II, Industrial Growth Centre, Haridwar, Uttarakhand - 249403</td></tr>
+              <tr class="border-b border-slate-200"><td class="py-1.5 font-bold text-slate-600">Classification:</td><td class="py-1.5 font-semibold text-emerald-800">Micro Enterprise (Udyam Reg: UDYAM-UK-03-0094182) - 50% Subsidy Claimed</td></tr>
+            </table>
+          </div>
+
+          <div class="space-y-3">
+            <h4 class="font-bold text-slate-900 uppercase tracking-wider border-b border-slate-300 pb-1 text-xs">2. Product & Standard Specifications</h4>
+            <div class="grid grid-cols-2 gap-4 text-[11px] bg-slate-50 p-3 rounded border border-slate-200">
+              <div><span class="text-slate-500 block font-medium">Product Description:</span><span class="font-bold text-slate-900">${b.name}</span></div>
+              <div><span class="text-slate-500 block font-medium">Standard Spec:</span><span class="font-bold text-blue-700">${b.code}</span></div>
+              <div><span class="text-slate-500 block font-medium">Sector:</span><span class="font-bold text-slate-900">${b.sector}</span></div>
+              <div><span class="text-slate-500 block font-medium">Scheme:</span><span class="font-bold text-slate-900">${b.scheme}</span></div>
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h4 class="font-bold text-slate-900 uppercase tracking-wider border-b border-slate-300 pb-1 text-xs">3. In-House Factory Quality Lab Equipment</h4>
+            <div class="p-3 bg-slate-50 rounded border border-slate-200 text-[11px] text-slate-800">
+              <strong>Installed Lab Equipment:</strong> ${b.labEquipment}
+            </div>
+          </div>
+
+          <div class="pt-4 border-t-2 border-slate-800 flex justify-between items-end text-[11px]">
+            <div class="space-y-1">
+              <span class="font-bold block text-slate-800">Application Fee: ₹1,000 + GST</span>
+              <span class="text-emerald-700 font-bold block">${b.msmeConcession}</span>
+            </div>
+            <div class="text-right space-y-4">
+              <div class="h-10 w-24 border-b border-dashed border-slate-400 mx-auto"></div>
+              <div><span class="font-bold block text-slate-900">Authorized Signatory</span><span class="text-[10px] text-slate-500">With Official Factory Seal</span></div>
+            </div>
+          </div>
+        `;
+        } else {
+          titleEl.innerText = `${b.code} Gazette Standard Specification`;
+          container.innerHTML = `
+          <div class="border-b-2 border-slate-800 pb-4 text-center space-y-1">
+            <div class="flex justify-between items-center mb-1"><span class="text-[10px] font-bold text-blue-700 font-mono">${b.code}</span><span class="text-[10px] text-slate-500">ICS Notified Standard</span></div>
+            <h2 class="text-base font-extrabold uppercase tracking-wide text-slate-900">भारतीय मानक</h2>
+            <h3 class="text-sm font-bold uppercase tracking-wider text-slate-800 font-cinzel">INDIAN STANDARD SPECIFICATION</h3>
+            <p class="text-xs font-extrabold text-blue-900 mt-2 uppercase">${b.name} — SPECIFICATION</p>
+          </div>
+
+          <div class="space-y-3 text-xs leading-relaxed text-slate-700">
+            <h4 class="font-bold text-slate-900 uppercase tracking-wider">1. SCOPE & MANDATORY NORMS</h4>
+            <p>This Indian Standard prescribes the requirements, test methods, and sampling protocols for ${b.name} manufactured or imported into India.</p>
+            <div class="p-3 bg-blue-50 rounded border border-blue-200">
+              <strong class="text-blue-900">Primary Clause Requirement:</strong> ${b.clause}
+            </div>
+            <p><strong>Mandatory Laboratory Testing Setup:</strong> ${b.labEquipment}</p>
+          </div>
+
+          <div class="pt-6 border-t border-slate-300 text-center text-[10px] text-slate-500">
+            Published by Bureau of Indian Standards, Manak Bhawan, 9 Bahadur Shah Zafar Marg, New Delhi 110002
+          </div>
+        `;
+        }
+      }
+
+      function downloadAsPdfFile() {
+        const element = document.getElementById("pdfDocumentArea");
+        const btn = document.getElementById("pdfDownloadBtn");
+        const originalText = btn.innerHTML;
+
+        btn.innerHTML =
+          '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Generating PDF...';
+        btn.disabled = true;
+
+        const filename =
+          currentPdfDoc === "formV"
+            ? `BIS_Form_V_${selectedBusinessKey}.pdf`
+            : `BIS_Spec_${selectedBusinessKey}.pdf`;
+
+        const opt = {
+          margin: [10, 10, 10, 10],
+          filename: filename,
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true },
+          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+        };
+
+        html2pdf()
+          .set(opt)
+          .from(element)
+          .save()
+          .then(() => {
+            btn.innerHTML =
+              '<i class="fa-solid fa-check mr-1"></i> Downloaded!';
+            setTimeout(() => {
+              btn.innerHTML = originalText;
+              btn.disabled = false;
+            }, 2000);
+          })
+          .catch((err) => {
+            console.error(err);
+            window.print();
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+          });
+      }
+
+      function downloadPitchReportPdf() {
+        const element = document.getElementById("pitchDeckContent");
+        const opt = {
+          margin: [10, 10, 10, 10],
+          filename: "SIH_CertiMind_AI_Pitch_Report.pdf",
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true },
+          jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+        };
+        html2pdf().set(opt).from(element).save();
+      }
+
+      function printDocument() {
+        window.print();
+      }
+      function submitGrievance(e) {
+        e.preventDefault();
+        document.getElementById("grievanceAlert").classList.remove("hidden");
+      }
+
+      function changeLanguage(lang) {
+        currentLanguage = lang;
+        const langNames = {
+          en: "English",
+          hi: "हिन्दी",
+          bn: "বাংলা",
+          ta: "தமிழ்",
+          te: "తెలుగు",
+          mr: "मराठी",
+        };
+        alert(`Bhashini Voice & Translation Engine set to: ${langNames[lang]}`);
+      }
+
+      function openPitchModal() {
+        document.getElementById("pitchModal").classList.remove("hidden");
+      }
+      function closePitchModal() {
+        document.getElementById("pitchModal").classList.add("hidden");
+      }
+
+      window.addEventListener("DOMContentLoaded", () => {
+        initBusinessesUI();
+        populateStandardsTable();
+        generateRoadmap();
+      });
+    </script>
+  </body>
+</html>
